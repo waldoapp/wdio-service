@@ -1,0 +1,22 @@
+{
+    "name": "@waldo-testing/wdio-service",
+    "version": "0.1.0",
+    "description": "Webdriver.io service for Waldo",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc"
+    },
+    "author": "developers@waldo.com",
+    "license": "MIT",
+    "dependencies": {
+        "@wdio/logger": "^8.38.0"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "@wdio/types": "^8.37.0",
+        "typescript": "^5.4.5"
+    },
+    "files": [
+        "dist"
+    ]
+}
