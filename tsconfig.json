@@ -4,9 +4,11 @@
     "target": "es2020",
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "skipLibCheck": true,
     "outDir": "./dist",
     "declaration": true,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "types": ["node", "webdriverio"]
   },
   "include": [
     "src/**/*"

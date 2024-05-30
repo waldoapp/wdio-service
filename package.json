@@ -1,5 +1,5 @@
 {
-    "name": "@waldo-testing/wdio-service",
+    "name": "@waldoapp/wdio-service",
     "version": "0.1.0",
     "description": "Webdriver.io service for Waldo",
     "main": "dist/index.js",
@@ -9,12 +9,18 @@
     "author": "developers@waldo.com",
     "license": "MIT",
     "dependencies": {
-        "@wdio/logger": "^8.38.0"
+        "@wdio/logger": "^8.0.0",
+        "axios": "^1.0.0",
+        "lodash": "^4.0.0",
+        "webdriver": "^8.0.0",
+        "yaml": "^2.0.0"
     },
     "devDependencies": {
+        "@types/lodash": "^4.17.4",
         "@types/node": "^18.0.0",
         "@wdio/types": "^8.37.0",
-        "typescript": "^5.4.5"
+        "typescript": "^5.4.5",
+        "webdriverio": "^8.0.0"
     },
     "files": [
         "dist"
