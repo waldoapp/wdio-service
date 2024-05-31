@@ -59,13 +59,12 @@ async function loadWaldoProfile(): Promise<WaldoProfileYaml> {
 export type Configuration = EnvironmentConfiguration;
 
 export async function loadConfiguration(
-  testRunnerOptions: Options.Testrunner,
 ): Promise<Configuration> {
   const envConfig = getEnvironmentConfiguration();
   const profileConfig = await loadWaldoProfile();
 
   return {
     ...envConfig,
-    token: testRunnerOptions.key ?? envConfig.token ?? profileConfig.user_token,
+    token: envConfig.token ?? profileConfig.user_token,
   };
 }

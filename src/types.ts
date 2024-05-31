@@ -1,16 +1,6 @@
 import type { RemoteCapability } from "@wdio/types/build/Capabilities";
 
-export type WaldoCapabilityOptions = {
-  /**
-   * Name of the device to use, like `iPhone 15` or `Pixel 7`
-   */
-  deviceName?: string;
-
-  /**
-   * Operating system version to use, like `17.0` or `33.0`
-   */
-  osVersion?: string;
-
+type WaldoSharedOptions = {
   /**
    * Security token
    *
@@ -23,19 +13,37 @@ export type WaldoCapabilityOptions = {
    */
   token?: string;
 
+  waldoMode?: true;
+
+  waitSessionReady?: boolean;
+
+  /**
+   * Open a browser window with the session viewer when the session starts.
+   *
+   * This option has no effect when `sessionId` is specified.
+   *
+   * Default: `false`
+   */
+  showSession?: boolean;
+
   /**
    * ID of an existing session to connect to instead of creating a new one.
    *
    * Used for interactive development.
    */
   sessionId?: string;
+};
 
-  waldoMode?: true;
+export type WaldoCapabilityOptions = WaldoSharedOptions & {
+  /**
+   * Name of the device to use, like `iPhone 15` or `Pixel 7`
+   */
+  deviceName?: string;
 
-  waitSessionReady?: boolean;
-
-  /** Open a browser window with the session viewer when the session starts */
-  showSession?: boolean;
+  /**
+   * Operating system version to use, like `17.0` or `33.0`
+   */
+  osVersion?: string;
 };
 
 export type WaldoCapabilities = {
@@ -54,10 +62,7 @@ export type WaldoRemoteCapability = {
 
 export type RemoteCapabilityWithWaldo = RemoteCapability & WaldoRemoteCapability;
 
-export type WaldoServiceOptions = {
-  waldoMode?: true;
-  waitSessionReady?: false;
-};
+export type WaldoServiceOptions = WaldoSharedOptions;
 
 export type BoundingBox = { width: number; height: number; top: number; left: number };
 

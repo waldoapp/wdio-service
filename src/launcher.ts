@@ -20,7 +20,7 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
     config: Options.Testrunner,
     capabilities: Capabilities.RemoteCapabilities,
   ): Promise<void> {
-    this.configuration = await loadConfiguration(config);
+    this.configuration = await loadConfiguration();
     this.configureRemoteInAllCapabilities(config, capabilities, this.configuration);
   }
 
@@ -32,12 +32,12 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
     if (Array.isArray(capabilities)) {
       for (const cap of capabilities) {
         const alwaysMatch = 'alwaysMatch' in cap ? cap.alwaysMatch : cap;
-        this.checkCapabilities(alwaysMatch, configuration);
+        this.checkCapabilities(config, alwaysMatch, configuration);
         await this.overrideRemoteInCapabilities(alwaysMatch, configuration);
       }
     } else if (typeof capabilities === 'object' && capabilities !== null) {
       for (const cap of Object.values(capabilities)) {
-        this.checkCapabilities(cap, configuration);
+        this.checkCapabilities(config, cap, configuration);
         await this.overrideRemoteInCapabilities(cap, configuration);
       }
     }
@@ -45,38 +45,17 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
     await this.overrideRemoteInCapabilities(config, configuration);
   }
 
-  private checkCapabilities(capabilities: CapabilitiesWithWaldo, configuration: Configuration) {
-    if (capabilities['waldo:options'] === undefined) {
-        // eslint-disable-next-line no-param-reassign
-        capabilities['waldo:options'] = {};
-    }
+  private checkCapabilities(testRunnerOptions: Options.Testrunner, capabilities: CapabilitiesWithWaldo, configuration: Configuration) {
+    capabilities['waldo:options'] = capabilities['waldo:options'] ?? {};
+
+    capabilities['appium:app'] = capabilities['appium:app'] ?? configuration.versionId;
 
     const waldoOptions = capabilities['waldo:options'];
-
-    if (waldoOptions.token === undefined) {
-        waldoOptions.token = configuration.token;
-    }
-
-    if (waldoOptions.sessionId === undefined) {
-        waldoOptions.sessionId = configuration.sessionId;
-    }
-
-    if (capabilities['appium:app'] === undefined) {
-        // eslint-disable-next-line no-param-reassign
-        capabilities['appium:app'] = configuration.versionId;
-    }
-
-    if (waldoOptions.waitSessionReady === undefined && this.serviceOptions.waitSessionReady !== undefined) {
-        waldoOptions.waitSessionReady = this.serviceOptions.waitSessionReady;
-    }
-
-    if (waldoOptions.waldoMode === undefined && this.serviceOptions.waldoMode !== undefined) {
-        waldoOptions.waldoMode = this.serviceOptions.waldoMode;
-    }
-
-    if (waldoOptions.showSession === undefined && configuration.showSession !== undefined) {
-        waldoOptions.showSession = configuration.showSession;
-    }
+    waldoOptions.token = waldoOptions.token ?? this.serviceOptions.token ?? capabilities.key ?? testRunnerOptions.key ?? configuration.token;
+    waldoOptions.sessionId = waldoOptions.sessionId ?? this.serviceOptions.sessionId  ?? configuration.sessionId;
+    waldoOptions.waitSessionReady = waldoOptions.waitSessionReady ?? this.serviceOptions.waitSessionReady;
+    waldoOptions.waldoMode = waldoOptions.waldoMode ?? this.serviceOptions.waldoMode;
+    waldoOptions.showSession = waldoOptions.showSession ?? this.serviceOptions.showSession ?? configuration.showSession;
 
     const hasVersionInformation = typeof capabilities['appium:app'] === 'string' || typeof waldoOptions.sessionId === 'string';
     if (!hasVersionInformation) {
