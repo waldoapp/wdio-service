@@ -13,12 +13,20 @@ type WaldoSharedOptions = {
    */
   token?: string;
 
+  /**
+   * Use the non-appium compatible Waldo tree.
+   */
   waldoMode?: true;
 
+  /**
+   * Wait for the session to be fully ready and the application launched before starting the test.
+   *
+   * Otherwise the test will start as soon as the device is available.
+  */
   waitSessionReady?: boolean;
 
   /**
-   * Open a browser window with the session viewer when the session starts.
+   * Open the Waldo interactive session viewer in a browser when a test is started.
    *
    * This option has no effect when `sessionId` is specified.
    *
@@ -32,6 +40,11 @@ type WaldoSharedOptions = {
    * Used for interactive development.
    */
   sessionId?: string;
+
+  /**
+   * ID (`appv-0123456789abcdef`) of the application version to use for the session.
+   */
+  versionId?: string;
 };
 
 export type WaldoCapabilityOptions = WaldoSharedOptions & {
@@ -62,7 +75,7 @@ export type WaldoRemoteCapability = {
 
 export type RemoteCapabilityWithWaldo = RemoteCapability & WaldoRemoteCapability;
 
-export type WaldoServiceOptions = WaldoSharedOptions;
+export type WaldoServiceOptions = WaldoSharedOptions ;
 
 export type BoundingBox = { width: number; height: number; top: number; left: number };
 

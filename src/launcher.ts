@@ -48,11 +48,11 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
   private checkCapabilities(testRunnerOptions: Options.Testrunner, capabilities: CapabilitiesWithWaldo, configuration: Configuration) {
     capabilities['waldo:options'] = capabilities['waldo:options'] ?? {};
 
-    capabilities['appium:app'] = capabilities['appium:app'] ?? configuration.versionId;
+    capabilities['appium:app'] = capabilities['appium:app'] ?? this.serviceOptions.versionId ?? configuration.versionId;
 
     const waldoOptions = capabilities['waldo:options'];
     waldoOptions.token = waldoOptions.token ?? this.serviceOptions.token ?? capabilities.key ?? testRunnerOptions.key ?? configuration.token;
-    waldoOptions.sessionId = waldoOptions.sessionId ?? this.serviceOptions.sessionId  ?? configuration.sessionId;
+    waldoOptions.sessionId = waldoOptions.sessionId ?? this.serviceOptions.sessionId ?? configuration.sessionId;
     waldoOptions.waitSessionReady = waldoOptions.waitSessionReady ?? this.serviceOptions.waitSessionReady;
     waldoOptions.waldoMode = waldoOptions.waldoMode ?? this.serviceOptions.waldoMode;
     waldoOptions.showSession = waldoOptions.showSession ?? this.serviceOptions.showSession ?? configuration.showSession;
