@@ -13,6 +13,9 @@
       "wdio-service",
       "waldo"
     ],
+    "engines": {
+      "node": ">=18"
+    },
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc"
