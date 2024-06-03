@@ -3,7 +3,10 @@ import { resolve as pathResolve, parse as pathParse } from 'path';
 import { command } from 'webdriver';
 
 import { BoundingBox } from './types.js';
-import { tapElement, tapElementWith, typeInElement, performClick, waitForElement, tapCenterOfBox, findInTree, SwipeDirection, swipeScreen } from './utils.js';
+import {
+  tapElement, tapElementWith, typeInElement, performClick, waitForElement, tapCenterOfBox, findInTree, SwipeDirection,
+  swipeScreen, logEvent
+} from './utils.js';
 
 export function addDriverCommands(driver: WebdriverIO.Browser) {
   driver.addCommand(
@@ -112,6 +115,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
 
   driver.addCommand(
     'tapCenterOfBox',
+    // eslint-disable-next-line prefer-arrow-callback
     async function commandFn(this: WebdriverIO.Browser, box: BoundingBox) {
       return tapCenterOfBox(this, box);
     },
@@ -133,6 +137,19 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
       toScreenPercent: number,
     ) {
       return swipeScreen(this, direction, fromScreenPercent, toScreenPercent);
+    },
+  );
+
+  driver.addCommand(
+    'log',
+    async function commandFn(
+      this: WebdriverIO.Browser,
+      message: string,
+      payload: Record<string, string | boolean | number> = {},
+      level: 'debug' | 'info' | 'warn' | 'error' = 'debug',
+    ) {
+      console.log(`[${level}]: ${message} - ${JSON.stringify(payload)}`);
+      return logEvent(this, message, payload, level);
     },
   );
 }
