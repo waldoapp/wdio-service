@@ -14,10 +14,6 @@ const execP = promisify(exec);
 declare var driver: WebdriverIO.Browser;
 
 export class WaldoWdioService implements Services.ServiceInstance {
-  constructor(options: any) {
-    console.log('WaldoWdioService constructor', options);
-  }
-
   async before(
     capabilities: CapabilitiesWithWaldo,
     _specs: string[],
