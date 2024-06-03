@@ -61,4 +61,9 @@ export class WaldoWdioService implements Services.ServiceInstance {
       );
     }
   }
+
+  afterSession() {
+    const { replayUrl } = driver.capabilities as WaldoRemoteCapability;
+    console.log(`\n\nWaldo Session link: ${replayUrl}\n\n`);
+  }
 }
