@@ -2,6 +2,17 @@
     "name": "@waldoapp/wdio-service",
     "version": "0.1.1",
     "description": "Webdriver.io service for Waldo",
+    "homepage": "https://www.waldo.com/scripting",
+    "bugs": {
+      "url": "https://github.com/waldoapp/wdio-service/issues"
+    },
+    "repository": "github:waldoapp/wdio-service",
+    "keywords": [
+      "webdriver",
+      "wdio",
+      "wdio-service",
+      "waldo"
+    ],
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc"
