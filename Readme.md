@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml/badge.svg)](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml)
 
-WebdriverIO service that provides a better integration into [Waldo][https://www.waldo.com/scripting).
+WebdriverIO service that provides a better integration into [Waldo](https://www.waldo.com/scripting).
 
 What this package provide:
 - Automatic configuration of Waldo as the webdriver endpoint
