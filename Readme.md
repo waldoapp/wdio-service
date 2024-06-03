@@ -29,10 +29,9 @@ The token can either be a user-scoped token for development found in the
 
 ```ts
 // wdio.conf.ts
-import type { Options } from '@wdio/types'
 import '@waldoapp/wdio-service';
 
-export const config: Options.Testrunner = {
+export const config: WebdriverIO.Config = {
     // This is done automatically if no key is provided,
     // the WALDO_API_TOKEN environment variable is used
     key: process.env.WALDO_API_TOKEN,
