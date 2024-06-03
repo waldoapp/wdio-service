@@ -59,7 +59,7 @@ Security token.
 
 Can also be provided as `key` in the test runner options or in the `WALDO_API_TOKEN` environment variable.
 
-Type: `string`
+Type: `string` <br/>
 Default: `undefined`
 
 ### waldoMode
@@ -70,7 +70,7 @@ This option enable the full Waldo tree mode. In this mode the tree returned can 
 elements, Web views, React Native and Flutter elements but the schema is different and incompatible with scripts not
 specifically targeting Waldo.
 
-Type: `boolean`
+Type: `boolean` <br/>
 Default: `false`
 
 ### showSession
@@ -79,7 +79,7 @@ Open the Waldo interactive session viewer in a browser when a test is started.
 
 This option has no effect when a `sessionId` is specified.
 
-Type: `boolean`
+Type: `boolean` <br/>
 Default: `false`
 
 ### waitSessionReady
@@ -87,7 +87,7 @@ Default: `false`
 Wait for the session to be fully ready and the application launched before starting the test. Otherwise the test will
 start as soon as the device is available.
 
-Type: `boolean`
+Type: `boolean` <br/>
 Default: `false`
 
 ### sessionId
@@ -97,7 +97,7 @@ development.
 
 Can also be provided in the `WALDO_SESSION_ID` or `SESSION_ID` environment variables.
 
-Type: `string`
+Type: `string` <br/>
 Default: `undefined`
 
 ### versionId
@@ -108,7 +108,7 @@ Can also be provided in the `WALDO_APP_VERSION_ID` or `WALDO_APP_VERSION_ID` env
 
 Can also be provided in the `appium:app` capability field for Appium compatibility.
 
-Type: `string`
+Type: `string` <br/>
 Default: `undefined`
 
 ## Device capabilities
@@ -131,7 +131,7 @@ Name of the device to use for the session, like `iPhone 15` or `Pixel 7`.
 
 If not specified the default device configured for the App in Waldo will be used.
 
-Type: `string`
+Type: `string` <br/>
 Default: `undefined`
 
 ### osVersion
@@ -140,5 +140,5 @@ Operating system version to use, like `17.0` or `33.0`
 
 If not specified the default device configured for the App in Waldo will be used.
 
-Type: `string`
+Type: `string` <br/>
 Default: `undefined`
