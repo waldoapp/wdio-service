@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
+import * as open from 'open';
 
 import type { Services } from '@wdio/types';
 
@@ -8,8 +7,6 @@ import { addDriverCommands } from './commands.js';
 import { waitForSessionReady } from './utils.js';
 import type { CapabilitiesWithWaldo, WaldoRemoteCapability } from './types.js';
 import { Test, TestResult } from '@wdio/types/build/Frameworks.js';
-
-const execP = promisify(exec);
 
 declare var driver: WebdriverIO.Browser;
 
@@ -29,7 +26,9 @@ export class WaldoWdioService implements Services.ServiceInstance {
 
         // Open Waldo session in browser if not in interactive mode
         if (waldoOptions.showSession && !waldoOptions.sessionId) {
-            await execP(`open "${replayUrl}"`);
+            if (replayUrl?.startsWith('http://') || replayUrl?.startsWith('https://')) {
+                open(replayUrl);
+            }
         }
 
         if (waldoOptions.waitSessionReady) {
