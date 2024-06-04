@@ -2,31 +2,29 @@
 
 [![CI](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml/badge.svg)](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml)
 
-WebdriverIO service that provides a better integration into [Waldo](https://www.waldo.com/scripting).
+A WebdriverIO service that provides better integration with [Waldo](https://www.waldo.com/scripting).
 
-What this package provide:
+This package provides:
 
-- Automatic configuration of Waldo as the webdriver endpoint
-- A set of additional commands to ease mobile testing
-- TypeScript definition for the options and mobile specific capabilities
+- Automatic configuration of Waldo as the webdriver endpoint.
+- A collectin of additional commands to ease mobile testing.
+- A TypeScript definition for the options and mobile-specific capabilities.
 
 ## Installation
 
-The easiest way is to keep `@waldoapp/wdio-service` as a devDependency in your `package.json` via:
+The easiest way to install this package is to define `@waldoapp/wdio-service` as a device dependency (`devDependency`) in your `package.json`:
 
 ```sh
 npm install @waldoapp/wdio-service --save-dev
 ```
 
-Instructions on how to install `WebdriverIO` can be found [here.](https://webdriver.io/docs/gettingstarted)
+Instructions on how to install `WebdriverIO` can be found [here](https://webdriver.io/docs/gettingstarted).
 
 ## Configuration
 
-To use the Waldo service you'll need to provide a valid Waldo API token. The token can be provided via the environment
-variable `WALDO_API_TOKEN` or via the `key` option in your `wdio.conf.ts` file.
+To use the Waldo service, you need to provide a valid Waldo API token. This token can be specified by defining the `WALDO_API_TOKEN` environment variable, or by including the `key` option in your `wdio.conf.ts` file.
 
-The token can either be a user-scoped token for development found in the
-[user settings](https://app.waldo.com/settings/profile) or an application-scoped CI token found in the App Configuration.
+The API token can be either a user-scoped token for development found in the [“Profile” tab of your Waldo account settings](https://app.waldo.com/settings/profile), or an application-scoped CI token found in the [“General” tab of the “Configuration”](https://app.waldo.com/applications/0/configurations/general) for your app.
 
 ```ts
 // wdio.conf.ts
@@ -48,77 +46,72 @@ export const config: WebdriverIO.Config = {
 };
 ```
 
-To run successfully the application binary to test must have been uploaded to Waldo, this will generate a build version
-ID of the form `appv-0123456789abcdef`. This version ID can be provided in the `versionId` option or in the
-`appium:app` capability field for Appium compatibility.
+In order to run, you must upload your application binary to Waldo. A successful upload generates a build version ID of the form `appv-0123456789abcdef`. This version ID must then be provided in either the `versionId` option, or the `appium:app` capability field for Appium compatibility.
 
-It isn't necessary to provide the `versionId` if an existing running session is specified with the `sessionId` option.
+You do _not_ need to provide the `versionId` if instead you specify an existing running session with the `sessionId` option.
 
-## Waldo Service Options
+## Waldo service options
 
-To authorize the Waldo service your config needs to contain a [`key`](https://webdriver.io/docs/options#key) option.
+To authorize the Waldo service your configuration _must_ contain a [`key`](https://webdriver.io/docs/options#key) option.
 
 ### token
 
-Security token.
+The security token.
 
-Can also be provided as `key` in the test runner options or in the `WALDO_API_TOKEN` environment variable.
+This can also be specified with either `key` in the test runner options, or the `WALDO_API_TOKEN` environment variable.
 
 Type: `string` <br/>
 Default: `undefined`
 
 ### waldoMode
 
-The default behavior of the Waldo service is to return a tree similar to the one returned by Appium for compatibility.
+For compatibility, the default behavior of the Waldo service is to return a tree similar to the one returned by Appium.
 
-This option enable the full Waldo tree mode. In this mode the tree returned can be a lot better and unifies native
-elements, Web views, React Native and Flutter elements but the schema is different and incompatible with scripts not
-specifically targeting Waldo.
+This option enables full Waldo tree mode. In this mode the tree returned is typically _much_ better as it unifies native elements, Web views, React Native, and Flutter elements. However, the schema is different and _incompatible_ with scripts that do not
+specifically target Waldo.
 
 Type: `boolean` <br/>
 Default: `false`
 
 ### showSession
 
-Open the Waldo interactive session viewer in a browser when a test is started.
+Opens the Waldo interactive session viewer in a browser when the test is started.
 
-This option has no effect when a `sessionId` is specified.
+This option has no effect when the `sessionId` option is specified.
 
 Type: `boolean` <br/>
 Default: `false`
 
 ### waitSessionReady
 
-Wait for the session to be fully ready and the application launched before starting the test. Otherwise the test will
-start as soon as the device is available.
+Waits for the session to be fully ready, and the application launched, before starting the test. Otherwise, the test starts as soon as the device is available.
 
 Type: `boolean` <br/>
 Default: `false`
 
 ### sessionId
 
-ID of an existing waldo session (Created via `Sessions > Live > Start session`) to connect to for interactive
-development.
+The ID of an existing Waldo session (created via `Sessions > Live > Start session`) to connect to. This is useful for interactive development.
 
-Can also be provided in the `WALDO_SESSION_ID` or `SESSION_ID` environment variables.
+The session ID can also be specified with the `WALDO_SESSION_ID` (or `SESSION_ID`) environment variable.
 
 Type: `string` <br/>
 Default: `undefined`
 
 ### versionId
 
-ID (`appv-0123456789abcdef`) of the application version to use for the session.
+The ID of the app (build) version to use for the test session (for example, `appv-0123456789abcdef`).
 
-Can also be provided in the `WALDO_APP_VERSION_ID` or `WALDO_APP_VERSION_ID` environment variables.
+The version ID can also be specified with the `WALDO_APP_VERSION_ID` (or `VERSION_ID`) environment variable.
 
-Can also be provided in the `appium:app` capability field for Appium compatibility.
+For Appium compatibility, this option can also be specified in the `appium:app` capability field.
 
 Type: `string` <br/>
 Default: `undefined`
 
 ## Device capabilities
 
-Most of the service options can also be provided in the capabilities object for a specific device inside the `waldo:options` key:
+Most of the service options can also be specified in the capabilities object for a specific device inside the `waldo:options` key:
 
 ```ts
 capabilities: [
@@ -134,18 +127,18 @@ capabilities: [
 
 ### deviceName
 
-Name of the device to use for the session, like `iPhone 15` or `Pixel 7`.
+The name of the device to use for the test session (for example, `iPhone 15` or `Pixel 7`).
 
-If not specified the default device configured for the App in Waldo will be used.
+If this option is not specified, the default device configured for the app in Waldo is used.
 
 Type: `string` <br/>
 Default: `undefined`
 
 ### osVersion
 
-Operating system version to use, like `17.0` or `33.0`
+The operating system version to use (for example, `17.0` or `33.0`).
 
-If not specified the default device configured for the App in Waldo will be used.
+If this option is not specified, the default device configured for the app in Waldo is used.
 
 Type: `string` <br/>
 Default: `undefined`
