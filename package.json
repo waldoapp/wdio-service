@@ -4,21 +4,23 @@
     "description": "Webdriver.io service for Waldo",
     "homepage": "https://www.waldo.com/scripting",
     "bugs": {
-      "url": "https://github.com/waldoapp/wdio-service/issues"
+        "url": "https://github.com/waldoapp/wdio-service/issues"
     },
     "repository": "github:waldoapp/wdio-service",
     "keywords": [
-      "webdriver",
-      "wdio",
-      "wdio-service",
-      "waldo"
+        "webdriver",
+        "wdio",
+        "wdio-service",
+        "waldo"
     ],
     "engines": {
-      "node": ">=18"
+        "node": ">=18"
     },
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "prettier": "prettier . --write",
+        "prettier:check": "prettier . --check"
     },
     "author": "developers@waldo.com",
     "license": "MIT",
@@ -33,6 +35,7 @@
         "@types/lodash": "^4.17.4",
         "@types/node": "^18.0.0",
         "@wdio/types": "^8.37.0",
+        "prettier": "^3.3.0",
         "typescript": "^5.4.5",
         "webdriverio": "^8.0.0"
     },

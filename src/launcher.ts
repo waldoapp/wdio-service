@@ -3,77 +3,96 @@
 import type { Services, Capabilities, Options } from '@wdio/types';
 import type { Connection } from '@wdio/types/build/Options';
 
-import {LOCAL_REMOTE_CONFIG, DEFAULT_REMOTE_CONFIG} from './constants.js';
+import { LOCAL_REMOTE_CONFIG, DEFAULT_REMOTE_CONFIG } from './constants.js';
 import { type Configuration, loadConfiguration } from './config.js';
 import type { WaldoServiceOptions, CapabilitiesWithWaldo } from './types.js';
 
 export class WaldoWdioLauncherService implements Services.ServiceInstance {
-  private serviceOptions: WaldoServiceOptions;
+    private serviceOptions: WaldoServiceOptions;
 
-  private configuration: Configuration | undefined;
+    private configuration: Configuration | undefined;
 
-  constructor(serviceOptions: WaldoServiceOptions) {
-    this.serviceOptions = serviceOptions;
-  }
-
-  async onPrepare(
-    config: Options.Testrunner,
-    capabilities: Capabilities.RemoteCapabilities,
-  ): Promise<void> {
-    this.configuration = await loadConfiguration();
-    this.configureRemoteInAllCapabilities(config, capabilities, this.configuration);
-  }
-
-  private async configureRemoteInAllCapabilities(
-    config: Options.Testrunner,
-    capabilities: Capabilities.RemoteCapabilities,
-    configuration: Configuration
-  ) {
-    if (Array.isArray(capabilities)) {
-      for (const cap of capabilities) {
-        const alwaysMatch = 'alwaysMatch' in cap ? cap.alwaysMatch : cap;
-        this.checkCapabilities(config, alwaysMatch, configuration);
-        await this.overrideRemoteInCapabilities(alwaysMatch, configuration);
-      }
-    } else if (typeof capabilities === 'object' && capabilities !== null) {
-      for (const cap of Object.values(capabilities)) {
-        this.checkCapabilities(config, cap, configuration);
-        await this.overrideRemoteInCapabilities(cap, configuration);
-      }
+    constructor(serviceOptions: WaldoServiceOptions) {
+        this.serviceOptions = serviceOptions;
     }
 
-    await this.overrideRemoteInCapabilities(config, configuration);
-  }
-
-  private checkCapabilities(testRunnerOptions: Options.Testrunner, capabilities: CapabilitiesWithWaldo, configuration: Configuration) {
-    capabilities['waldo:options'] = capabilities['waldo:options'] ?? {};
-
-    capabilities['appium:app'] = capabilities['appium:app'] ?? this.serviceOptions.versionId ?? configuration.versionId;
-
-    const waldoOptions = capabilities['waldo:options'];
-    waldoOptions.token = waldoOptions.token ?? this.serviceOptions.token ?? capabilities.key ?? testRunnerOptions.key ?? configuration.token;
-    waldoOptions.sessionId = waldoOptions.sessionId ?? this.serviceOptions.sessionId ?? configuration.sessionId;
-    waldoOptions.waitSessionReady = waldoOptions.waitSessionReady ?? this.serviceOptions.waitSessionReady;
-    waldoOptions.waldoMode = waldoOptions.waldoMode ?? this.serviceOptions.waldoMode;
-    waldoOptions.showSession = waldoOptions.showSession ?? this.serviceOptions.showSession ?? configuration.showSession;
-
-    const hasVersionInformation = typeof capabilities['appium:app'] === 'string' || typeof waldoOptions.sessionId === 'string';
-    if (!hasVersionInformation) {
-      throw new Error('Missing version information in appium:app or session information in waldo:options.sessionId capabilities');
+    async onPrepare(
+        config: Options.Testrunner,
+        capabilities: Capabilities.RemoteCapabilities,
+    ): Promise<void> {
+        this.configuration = await loadConfiguration();
+        this.configureRemoteInAllCapabilities(config, capabilities, this.configuration);
     }
-  }
 
-  private async overrideRemoteInCapabilities(
-    capabilities: Connection,
-    configuration: Configuration
-  ): Promise<void> {
-    const remoteConfig = configuration.localDev ? LOCAL_REMOTE_CONFIG : DEFAULT_REMOTE_CONFIG;
+    private async configureRemoteInAllCapabilities(
+        config: Options.Testrunner,
+        capabilities: Capabilities.RemoteCapabilities,
+        configuration: Configuration,
+    ) {
+        if (Array.isArray(capabilities)) {
+            for (const cap of capabilities) {
+                const alwaysMatch = 'alwaysMatch' in cap ? cap.alwaysMatch : cap;
+                this.checkCapabilities(config, alwaysMatch, configuration);
+                await this.overrideRemoteInCapabilities(alwaysMatch, configuration);
+            }
+        } else if (typeof capabilities === 'object' && capabilities !== null) {
+            for (const cap of Object.values(capabilities)) {
+                this.checkCapabilities(config, cap, configuration);
+                await this.overrideRemoteInCapabilities(cap, configuration);
+            }
+        }
 
-    /* eslint-disable no-param-reassign */
-    capabilities.hostname = remoteConfig.hostname;
-    capabilities.port = remoteConfig.port;
-    capabilities.protocol = remoteConfig.protocol;
-    capabilities.path = remoteConfig.path;
-    /* eslint-enable no-param-reassign */
-  }
+        await this.overrideRemoteInCapabilities(config, configuration);
+    }
+
+    private checkCapabilities(
+        testRunnerOptions: Options.Testrunner,
+        capabilities: CapabilitiesWithWaldo,
+        configuration: Configuration,
+    ) {
+        capabilities['waldo:options'] = capabilities['waldo:options'] ?? {};
+
+        capabilities['appium:app'] =
+            capabilities['appium:app'] ?? this.serviceOptions.versionId ?? configuration.versionId;
+
+        const waldoOptions = capabilities['waldo:options'];
+        waldoOptions.token =
+            waldoOptions.token ??
+            this.serviceOptions.token ??
+            capabilities.key ??
+            testRunnerOptions.key ??
+            configuration.token;
+        waldoOptions.sessionId =
+            waldoOptions.sessionId ?? this.serviceOptions.sessionId ?? configuration.sessionId;
+        waldoOptions.waitSessionReady =
+            waldoOptions.waitSessionReady ?? this.serviceOptions.waitSessionReady;
+        waldoOptions.waldoMode = waldoOptions.waldoMode ?? this.serviceOptions.waldoMode;
+        waldoOptions.showSession =
+            waldoOptions.showSession ??
+            this.serviceOptions.showSession ??
+            configuration.showSession;
+
+        const hasVersionInformation =
+            typeof capabilities['appium:app'] === 'string' ||
+            typeof waldoOptions.sessionId === 'string';
+        if (!hasVersionInformation) {
+            throw new Error(
+                'Missing version information in appium:app or session information in waldo:options.sessionId capabilities',
+            );
+        }
+    }
+
+    private async overrideRemoteInCapabilities(
+        capabilities: Connection,
+        configuration: Configuration,
+    ): Promise<void> {
+        const remoteConfig = configuration.localDev ? LOCAL_REMOTE_CONFIG : DEFAULT_REMOTE_CONFIG;
+
+        /* eslint-disable no-param-reassign */
+        capabilities.hostname = remoteConfig.hostname;
+        capabilities.port = remoteConfig.port;
+        capabilities.protocol = remoteConfig.protocol;
+        capabilities.path = remoteConfig.path;
+        /* eslint-enable no-param-reassign */
+    }
 }

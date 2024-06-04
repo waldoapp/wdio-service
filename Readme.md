@@ -5,6 +5,7 @@
 WebdriverIO service that provides a better integration into [Waldo](https://www.waldo.com/scripting).
 
 What this package provide:
+
 - Automatic configuration of Waldo as the webdriver endpoint
 - A set of additional commands to ease mobile testing
 - TypeScript definition for the options and mobile specific capabilities
@@ -32,14 +33,19 @@ The token can either be a user-scoped token for development found in the
 import '@waldoapp/wdio-service';
 
 export const config: WebdriverIO.Config = {
-    // This is done automatically if no key is provided,
-    // the WALDO_API_TOKEN environment variable is used
-    key: process.env.WALDO_API_TOKEN,
+  // This is done automatically if no key is provided,
+  // the WALDO_API_TOKEN environment variable is used
+  key: process.env.WALDO_API_TOKEN,
 
-    services: [['@waldoapp/wdio-service',{
-        showSession: true
-    }]],
-}
+  services: [
+    [
+      '@waldoapp/wdio-service',
+      {
+        showSession: true,
+      },
+    ],
+  ],
+};
 ```
 
 To run successfully the application binary to test must have been uploaded to Waldo, this will generate a build version
@@ -115,13 +121,15 @@ Default: `undefined`
 Most of the service options can also be provided in the capabilities object for a specific device inside the `waldo:options` key:
 
 ```ts
-capabilities: [{
+capabilities: [
+  {
     platformName: 'Android',
     deviceName: 'Pixel 3a',
     'waldo:options': {
-        showSession: true
-    }
-}]
+      showSession: true,
+    },
+  },
+];
 ```
 
 ### deviceName
