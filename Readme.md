@@ -12,7 +12,7 @@ This package provides:
 
 ## Installation
 
-The easiest way to install this package is to define `@waldoapp/wdio-service` as a device dependency (`devDependency`) in your `package.json`:
+The easiest way to install this package is to define `@waldoapp/wdio-service` as a `devDependency` in your `package.json`:
 
 ```sh
 npm install @waldoapp/wdio-service --save-dev
