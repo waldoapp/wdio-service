@@ -1,12 +1,18 @@
 {
     "compilerOptions": {
+        "module": "NodeNext",
+        "target": "es2022",
+        "moduleResolution": "node16",
+
         "strict": true,
-        "target": "es2020",
-        "module": "CommonJS",
-        "moduleResolution": "Node",
+        "esModuleInterop": true,
         "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+
         "outDir": "./dist",
         "declaration": true,
+        "isolatedModules": true,
+        "removeComments": false,
         "rootDir": "./src",
         "types": ["node", "webdriverio"]
     },

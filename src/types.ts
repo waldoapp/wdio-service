@@ -1,5 +1,6 @@
-import type { RemoteCapability } from '@wdio/types/build/Capabilities';
-import { AppiumElement } from './utils';
+import type { Capabilities } from '@wdio/types';
+
+import type { AppiumElement } from './utils.js';
 
 type WaldoSharedOptions = {
     /**
@@ -74,7 +75,7 @@ export type WaldoRemoteCapability = {
     streamUrl?: string;
 };
 
-export type RemoteCapabilityWithWaldo = RemoteCapability & WaldoRemoteCapability;
+export type RemoteCapabilityWithWaldo = Capabilities.RemoteCapability & WaldoRemoteCapability;
 
 export type WaldoServiceOptions = WaldoSharedOptions;
 

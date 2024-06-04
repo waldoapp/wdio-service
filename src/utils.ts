@@ -1,6 +1,6 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import axios from 'axios';
-import type { ElementReference } from '@wdio/protocols/build/types';
+import type { ElementReference } from '@wdio/protocols';
 
 import { getRemoteBaseUrl, getWdUrl } from './urls.js';
 import { BoundingBox } from './types.js';

@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import type { Services, Capabilities, Options } from '@wdio/types';
-import type { Connection } from '@wdio/types/build/Options';
 
 import { LOCAL_REMOTE_CONFIG, DEFAULT_REMOTE_CONFIG } from './constants.js';
 import { type Configuration, loadConfiguration } from './config.js';
@@ -83,7 +82,7 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
     }
 
     private async overrideRemoteInCapabilities(
-        capabilities: Connection,
+        capabilities: Options.Connection,
         configuration: Configuration,
     ): Promise<void> {
         const remoteConfig = configuration.localDev ? LOCAL_REMOTE_CONFIG : DEFAULT_REMOTE_CONFIG;

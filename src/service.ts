@@ -1,12 +1,11 @@
 /* eslint-disable class-methods-use-this */
-import * as open from 'open';
+import open from 'open';
 
-import type { Services } from '@wdio/types';
+import type { Services, Frameworks } from '@wdio/types';
 
 import { addDriverCommands } from './commands.js';
 import { waitForSessionReady } from './utils.js';
 import type { CapabilitiesWithWaldo, WaldoRemoteCapability } from './types.js';
-import { Test, TestResult } from '@wdio/types/build/Frameworks.js';
 
 declare var driver: WebdriverIO.Browser;
 
@@ -36,11 +35,11 @@ export class WaldoWdioService implements Services.ServiceInstance {
         }
     }
 
-    async beforeTest(test: Test) {
+    async beforeTest(test: Frameworks.Test) {
         await driver.log(`Starting test "${test.title}"`, { file: test.file });
     }
 
-    async afterTest(test: Test, _context: any, testResult: TestResult) {
+    async afterTest(test: Frameworks.Test, _context: any, testResult: Frameworks.TestResult) {
         const { error, result, duration, passed } = testResult;
         if (passed) {
             await driver.log(

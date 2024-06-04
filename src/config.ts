@@ -2,7 +2,6 @@ import * as process from 'process';
 import * as fs from 'fs';
 import { homedir } from 'os';
 
-import type { Options } from '@wdio/types';
 import { parse as parseYaml } from 'yaml';
 
 type EnvironmentConfiguration = {
