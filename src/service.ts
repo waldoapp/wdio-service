@@ -33,7 +33,7 @@ export class WaldoWdioService implements Services.ServiceInstance {
             }
         }
 
-        if (waldoOptions.waitSessionReady) {
+        if (waldoOptions.waitSessionReady !== false) {
             await waitForSessionReady(browser.sessionId);
         }
     }

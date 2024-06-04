@@ -93,7 +93,7 @@ Wait for the session to be fully ready and the application launched before start
 start as soon as the device is available.
 
 Type: `boolean` <br/>
-Default: `false`
+Default: `true`
 
 ### sessionId
 
