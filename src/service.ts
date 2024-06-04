@@ -1,11 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import open from 'open';
 
+import logger from '@wdio/logger';
 import type { Services, Frameworks } from '@wdio/types';
 
 import { addDriverCommands } from './commands.js';
 import { waitForSessionReady } from './utils.js';
 import type { CapabilitiesWithWaldo, WaldoRemoteCapability } from './types.js';
+
+const log = logger('@waldoapp/wdio-service');
 
 declare var driver: WebdriverIO.Browser;
 
@@ -19,7 +22,7 @@ export class WaldoWdioService implements Services.ServiceInstance {
         addDriverCommands(browser);
 
         const { replayUrl } = browser.capabilities as WaldoRemoteCapability;
-        console.log(`View live session: ${replayUrl}`);
+        log.info(`View live session: ${replayUrl}`);
 
         const waldoOptions = capabilities['waldo:options'] ?? {};
 
@@ -62,6 +65,6 @@ export class WaldoWdioService implements Services.ServiceInstance {
 
     afterSession() {
         const { replayUrl } = driver.capabilities as WaldoRemoteCapability;
-        console.log(`\n\nWaldo Session link: ${replayUrl}\n\n`);
+        log.info(`Waldo Session link: ${replayUrl}`);
     }
 }

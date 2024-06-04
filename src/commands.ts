@@ -1,6 +1,8 @@
 import { promises as fsPromises } from 'fs';
 import { resolve as pathResolve, parse as pathParse } from 'path';
+
 import { command } from 'webdriver';
+import logger from '@wdio/logger';
 
 import { BoundingBox } from './types.js';
 import {
@@ -15,6 +17,8 @@ import {
     swipeScreen,
     logEvent,
 } from './utils.js';
+
+const log = logger('@waldoapp/wdio-service');
 
 export function addDriverCommands(driver: WebdriverIO.Browser) {
     driver.addCommand(
@@ -54,7 +58,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
                 .then(() => true)
                 .catch(() => false);
             if (!exists) {
-                console.log(`Initialize screenshot dir ${dir}`);
+                log.debug(`Initialize screenshot dir ${dir}`);
                 await fsPromises.mkdir(dir, { recursive: true });
             }
             await this.saveScreenshot(screenshotPath);
@@ -159,7 +163,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
             payload: Record<string, string | boolean | number> = {},
             level: 'debug' | 'info' | 'warn' | 'error' = 'debug',
         ) {
-            console.log(`[${level}]: ${message} - ${JSON.stringify(payload)}`);
+            log.debug(`Sending log [${level}]: ${message} - ${JSON.stringify(payload)}`);
             return logEvent(this, message, payload, level);
         },
     );

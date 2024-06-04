@@ -1,9 +1,12 @@
 import _ from 'lodash';
 import axios from 'axios';
+import logger from '@wdio/logger';
 import type { ElementReference } from '@wdio/protocols';
 
 import { getRemoteBaseUrl, getWdUrl } from './urls.js';
 import { BoundingBox } from './types.js';
+
+const log = logger('@waldoapp/wdio-service');
 
 export type AppiumElement = ElementReference & { ELEMENT: string };
 export type SessionDevice = {
@@ -47,7 +50,7 @@ export async function getLatestBuild(token: string) {
 
 export async function waitForSessionReady(sessionId: string) {
     const sessionInfo = await getSessionInfo(sessionId);
-    console.log(`Preparing device and installing your application...`);
+    log.info(`Preparing device and installing your application...`);
     if (sessionInfo.status === 'setup') {
         await waitAsPromise(5000);
         await waitForSessionReady(sessionId);
@@ -56,7 +59,7 @@ export async function waitForSessionReady(sessionId: string) {
     if (sessionInfo.status !== 'ready') {
         throw new Error(`Session is in bad state ${sessionInfo.status}`);
     }
-    console.log('Session is ready');
+    log.info('Waldo session is ready');
 }
 
 export async function logEvent(
