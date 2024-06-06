@@ -2,6 +2,8 @@ import type { Capabilities } from '@wdio/types';
 
 import type { AppiumElement } from './utils.js';
 
+export type WaldoEnvironment = 'production' | 'staging' | 'development';
+
 type WaldoSharedOptions = {
     /**
      * Security token
@@ -77,7 +79,14 @@ export type WaldoRemoteCapability = {
 
 export type RemoteCapabilityWithWaldo = Capabilities.RemoteCapability & WaldoRemoteCapability;
 
-export type WaldoServiceOptions = WaldoSharedOptions;
+export type WaldoServiceOptions = WaldoSharedOptions & {
+    /**
+     * Waldo environment.
+     *
+     * Default: `production`
+     */
+    environment?: WaldoEnvironment;
+};
 
 export type BoundingBox = { width: number; height: number; top: number; left: number };
 

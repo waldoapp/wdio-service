@@ -6,7 +6,7 @@ import type { Services, Frameworks } from '@wdio/types';
 
 import { addDriverCommands } from './commands.js';
 import { waitForSessionReady } from './utils.js';
-import type { CapabilitiesWithWaldo, WaldoRemoteCapability } from './types.js';
+import type { CapabilitiesWithWaldo, WaldoRemoteCapability, WaldoServiceOptions } from './types.js';
 
 const log = logger('@waldoapp/wdio-service');
 
@@ -34,7 +34,7 @@ export class WaldoWdioService implements Services.ServiceInstance {
         }
 
         if (waldoOptions.waitSessionReady !== false) {
-            await waitForSessionReady(browser.sessionId);
+            await waitForSessionReady(browser);
         }
     }
 
