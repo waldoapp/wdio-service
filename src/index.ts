@@ -1,6 +1,6 @@
 import { WaldoWdioService } from './service.js';
 import { WaldoWdioLauncherService } from './launcher.js';
-import { WaldoBrowser, WaldoCapabilities, WaldoServiceOptions } from './types.js';
+import type { WaldoBrowser, WaldoCapabilities, WaldoServiceOptions } from './types.js';
 
 export default WaldoWdioService;
 export const launcher = WaldoWdioLauncherService;

@@ -1,12 +1,12 @@
-import { getLocalDevFromEnvironment } from './config.js';
-import { DEFAULT_REMOTE_CONFIG, LOCAL_REMOTE_CONFIG } from './constants.js';
+import { DEFAULT_REMOTE_CONFIG } from './configuration/waldoEnvironment.js';
 
-const remoteConfig = getLocalDevFromEnvironment() ? LOCAL_REMOTE_CONFIG : DEFAULT_REMOTE_CONFIG;
-
-export function getRemoteBaseUrl() {
-    return `${remoteConfig.protocol}://${remoteConfig.hostname}:${remoteConfig.port}`;
+export function getRemoteBaseUrl(browser: WebdriverIO.Browser) {
+    const protocol = browser.options.protocol ?? 'http';
+    const hostname = browser.options.hostname ?? DEFAULT_REMOTE_CONFIG.hostname;
+    const port = browser.options.port ?? DEFAULT_REMOTE_CONFIG.port;
+    return `${protocol}://${hostname}:${port}`;
 }
 
-export function getWdUrl(path: string) {
-    return `${getRemoteBaseUrl()}${remoteConfig.path ?? '/'}${path}`;
+export function getWdUrl(browser: WebdriverIO.Browser, path: string) {
+    return `${getRemoteBaseUrl(browser)}${browser.options.path ?? '/'}${path}`;
 }

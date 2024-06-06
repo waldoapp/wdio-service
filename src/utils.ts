@@ -8,6 +8,8 @@ import { BoundingBox } from './types.js';
 
 const log = logger('@waldoapp/wdio-service');
 
+declare var driver: WebdriverIO.Browser;
+
 export type AppiumElement = ElementReference & { ELEMENT: string };
 export type SessionDevice = {
     model: string;
@@ -28,8 +30,11 @@ export async function waitAsPromise(timeMillis: number) {
     });
 }
 
-async function getSessionInfo(sessionId: string): Promise<SessionInfo> {
-    const waldoSessionUrl = getWdUrl(`/session/${sessionId}`);
+async function getSessionInfo(
+    driver: WebdriverIO.Browser,
+    sessionId: string,
+): Promise<SessionInfo> {
+    const waldoSessionUrl = getWdUrl(driver, `/session/${sessionId}`);
     const { data } = await axios(waldoSessionUrl);
     return data;
 }
@@ -48,12 +53,12 @@ export async function getLatestBuild(token: string) {
     return builds[0];
 }
 
-export async function waitForSessionReady(sessionId: string) {
-    const sessionInfo = await getSessionInfo(sessionId);
+export async function waitForSessionReady(driver: WebdriverIO.Browser) {
+    const sessionInfo = await getSessionInfo(driver, driver.sessionId);
     log.info(`Preparing device and installing your application...`);
     if (sessionInfo.status === 'setup') {
         await waitAsPromise(5000);
-        await waitForSessionReady(sessionId);
+        await waitForSessionReady(driver);
         return;
     }
     if (sessionInfo.status !== 'ready') {
@@ -68,7 +73,7 @@ export async function logEvent(
     payload: Record<string, string | boolean | number>,
     level: 'debug' | 'info' | 'warn' | 'error' = 'info',
 ) {
-    const url = `${getRemoteBaseUrl()}/wd/hub/session/${driver.sessionId}/timelineEvent`;
+    const url = `${getRemoteBaseUrl(driver)}/wd/hub/session/${driver.sessionId}/timelineEvent`;
     await axios.post(url, { level, message, payload });
 }
 
