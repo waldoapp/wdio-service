@@ -23,6 +23,9 @@
         "prettier": "prettier . --write",
         "prettier:check": "prettier . --check"
     },
+    "bin": {
+        "waldo-auth": "dist/bin/waldo-auth.js"
+    },
     "author": "developers@waldo.com",
     "license": "MIT",
     "dependencies": {
