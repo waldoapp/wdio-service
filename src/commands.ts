@@ -10,7 +10,7 @@ import {
     tapElement,
     tapElementWith,
     typeInElement,
-    performClick,
+    performTap,
     waitForElement,
     tapCenterOfBox,
     findInTree,
@@ -113,7 +113,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
     driver.addCommand(
         'tap',
         async function commandFn(this: WebdriverIO.Browser, x: number, y: number) {
-            return performClick(this, x, y);
+            return performTap(this, x, y);
         },
     );
 

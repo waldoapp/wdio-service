@@ -75,7 +75,7 @@ export async function logEvent(
     await axios.post(url, { level, message, payload });
 }
 
-export function performClick(driver: WebdriverIO.Browser, x: number, y: number) {
+export function performTap(driver: WebdriverIO.Browser, x: number, y: number) {
     return driver.performActions([
         {
             type: 'pointer',
@@ -156,7 +156,7 @@ export async function swipeScreen(
 export async function tapCenterOfBox(driver: WebdriverIO.Browser, box: BoundingBox) {
     const x = Math.round(box.left + box.width / 2);
     const y = Math.round(box.top + box.height / 2);
-    await performClick(driver, x, y);
+    await performTap(driver, x, y);
 }
 
 export async function waitForElement(
