@@ -116,9 +116,9 @@ export function performSwipe(
 
 export async function swipeScreen(
     driver: WebdriverIO.Browser,
-    direction: SwipeDirection,
-    fromScreenPercent: number,
-    toScreenPercent: number,
+    direction: SwipeDirection = 'horizontal',
+    fromScreenPercent: number = 95,
+    toScreenPercent: number = 5,
 ) {
     if (
         fromScreenPercent < 0 ||

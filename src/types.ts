@@ -113,6 +113,12 @@ export type WaldoBrowser = {
         delay?: number,
         waitForStability?: boolean,
     ): Promise<void>;
+
+    /**
+     * Simulate a 'tap' gesture at the given coordinates.
+     *
+     * This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerUp`.
+     */
     tap(x: number, y: number): Promise<void>;
     waitForElement(
         property: string,
@@ -121,24 +127,47 @@ export type WaldoBrowser = {
         delay?: number,
         waitForStability?: boolean,
     ): Promise<AppiumElement>;
+
+    /**
+     * Simulate a 'tap' gesture at the center of the given bounding box.
+     */
     tapCenterOfBox(box: BoundingBox): Promise<void>;
     getNodes(predicate: (n: any) => boolean): Promise<any[]>;
+
+    /**
+     * Simulate a 'swipe' gesture in the given direction.
+     *
+     * The default movement without any options is a horizontal swipe from right (`95`) to left (`5`).
+     *
+     * This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerMove`, `pointerUp`.
+     *
+     * @param direction The direction of the swipe, either `vertical` or `horizontal`. Default to `horizontal`.
+     * @param fromScreenPercent The starting point of the swipe as a percentage of the screen size. Default to `95`.
+     * @param toScreenPercent The ending point of the swipe as a percentage of the screen size. Default to `5`.
+     */
     swipeScreen(
-        direction: 'vertical' | 'horizontal',
-        fromScreenPercent: number,
-        toScreenPercent: number,
+        direction?: 'vertical' | 'horizontal',
+        fromScreenPercent?: number,
+        toScreenPercent?: number,
     ): Promise<void>;
 
     /**
      * A simplified wrapper around the `saveScreenshot` command that saves the screenshot to a file in the
      * `./screenshots/` directory, creating it if necessary.
      *
-     * If an absolute path is provided, this function is equivalent to calling `saveScreenshot` directly.
+     * **Note**: If an absolute path is provided, this function is equivalent to calling `saveScreenshot`
+     * directly.
+     *
+     * @param path The path to save the screenshot to
      */
     screenshot(path: string): Promise<void>;
 
     /**
      * Send a log line that will be visible in the Waldo Session Viewer
+     *
+     * @param message The message to log
+     * @param payload Additional data to log that will be visible when the log line is selected
+     * @param level The log level, one of `debug`, `info`, `warn`, or `error`. Default to `info`.
      */
     log(
         message: string,
