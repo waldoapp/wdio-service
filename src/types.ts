@@ -128,7 +128,18 @@ export type WaldoBrowser = {
         fromScreenPercent: number,
         toScreenPercent: number,
     ): Promise<void>;
+
+    /**
+     * A simplified wrapper around the `takeScreenshot` command that saves the screenshot to a file in the
+     * `./screenshots/` directory, creating it if necessary.
+     *
+     * If an absolute path is provided, this function is equivalent to calling `takeScreenshot` directly.
+     */
     screenshot(path: string): Promise<void>;
+
+    /**
+     * Send a log line that will be visible in the Waldo Session Viewer
+     */
     log(
         message: string,
         payload?: Record<string, string | boolean | number>,
