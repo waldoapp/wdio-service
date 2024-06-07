@@ -20,7 +20,7 @@ type WaldoSharedOptions = {
     /**
      * Use the non-appium compatible Waldo tree.
      */
-    waldoMode?: true;
+    waldoMode?: boolean;
 
     /**
      * Wait for the session to be fully ready and the application launched before starting the test.
