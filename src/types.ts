@@ -121,7 +121,7 @@ export type WaldoBrowser = {
         delay?: number,
         waitForStability?: boolean,
     ): Promise<AppiumElement>;
-    tapCenterOfBox(box: any): Promise<void>;
+    tapCenterOfBox(box: BoundingBox): Promise<void>;
     getNodes(predicate: (n: any) => boolean): Promise<any[]>;
     swipeScreen(
         direction: 'vertical' | 'horizontal',
@@ -130,10 +130,10 @@ export type WaldoBrowser = {
     ): Promise<void>;
 
     /**
-     * A simplified wrapper around the `takeScreenshot` command that saves the screenshot to a file in the
+     * A simplified wrapper around the `saveScreenshot` command that saves the screenshot to a file in the
      * `./screenshots/` directory, creating it if necessary.
      *
-     * If an absolute path is provided, this function is equivalent to calling `takeScreenshot` directly.
+     * If an absolute path is provided, this function is equivalent to calling `saveScreenshot` directly.
      */
     screenshot(path: string): Promise<void>;
 
