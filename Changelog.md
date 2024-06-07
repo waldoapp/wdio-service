@@ -1,3 +1,7 @@
+## Version 0.1.7
+
+- Various fixes to exported type definitions
+
 ## Version 0.1.6
 
 - Fix crash in the `screenshot` custom command.
