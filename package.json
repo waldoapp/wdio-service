@@ -1,6 +1,6 @@
 {
     "name": "@waldoapp/wdio-service",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Webdriver.io service for Waldo",
     "homepage": "https://www.waldo.com/scripting",
     "bugs": {

@@ -1,5 +1,6 @@
 import { promises as fsPromises } from 'fs';
-import { resolve as pathResolve, parse as pathParse } from 'path';
+import pathLib from 'path';
+import process from 'process';
 
 import { command } from 'webdriver';
 import logger from '@wdio/logger';
@@ -48,19 +49,21 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
     // Thin wrapper around saveScreenshot to ensure that the destination directory always exists
     driver.addCommand(
         'screenshot',
-        async function commandFn(this: WebdriverIO.Browser, relativeDestination: string) {
-            const screenshotPath = pathResolve(
-                `${__dirname}/../screenshots/${relativeDestination}`,
-            );
-            const { dir } = pathParse(screenshotPath);
-            const exists = await fsPromises
-                .access(dir)
-                .then(() => true)
-                .catch(() => false);
-            if (!exists) {
-                log.debug(`Initialize screenshot dir ${dir}`);
-                await fsPromises.mkdir(dir, { recursive: true });
+        async function commandFn(this: WebdriverIO.Browser, filepath: string) {
+            let screenshotPath = filepath;
+            if (!pathLib.isAbsolute(filepath)) {
+                screenshotPath = pathLib.join(process.cwd(), 'screenshots', filepath);
+                const { dir } = pathLib.parse(screenshotPath);
+                const exists = await fsPromises
+                    .access(dir)
+                    .then(() => true)
+                    .catch(() => false);
+                if (!exists) {
+                    log.info(`Initialize screenshot dir ${dir}`);
+                    await fsPromises.mkdir(dir, { recursive: true });
+                }
             }
+
             await this.saveScreenshot(screenshotPath);
         },
     );

@@ -1,3 +1,4 @@
+import pathLib from 'path';
 import _ from 'lodash';
 import axios from 'axios';
 import logger from '@wdio/logger';
@@ -7,8 +8,6 @@ import { getRemoteBaseUrl, getWdUrl } from './urls.js';
 import { BoundingBox } from './types.js';
 
 const log = logger('@waldoapp/wdio-service');
-
-declare var driver: WebdriverIO.Browser;
 
 export type AppiumElement = ElementReference & { ELEMENT: string };
 export type SessionDevice = {
