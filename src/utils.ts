@@ -1,4 +1,3 @@
-import pathLib from 'path';
 import _ from 'lodash';
 import axios from 'axios';
 import logger from '@wdio/logger';
@@ -256,8 +255,8 @@ export async function getTree(driver: WebdriverIO.Browser) {
 export async function findInTree(driver: WebdriverIO.Browser, predicate: (n: any) => boolean) {
     const tree = await getTree(driver);
     const nodes: any[] = [];
-    for (const wind of tree.windows) {
-        nodes.push(...wind.nodes.filter((n: any) => predicate(n)));
+    for (const treeWindow of tree.windows) {
+        nodes.push(...treeWindow.nodes.filter((n: any) => predicate(n)));
     }
     return nodes;
 }
@@ -318,4 +317,8 @@ export async function typeInElement(
     const element = await waitForElement(driver, property, value, timeout, delay, waitForStability);
     await driver.elementClick(element.ELEMENT);
     await driver.setValueImmediate(element.ELEMENT, text);
+}
+
+export function isNodeError(error: any): error is NodeJS.ErrnoException {
+    return error instanceof Error;
 }

@@ -1,12 +1,6 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable max-classes-per-file */
 import type { Services, Capabilities, Options } from '@wdio/types';
 
-import {
-    LOCAL_REMOTE_CONFIG,
-    DEFAULT_REMOTE_CONFIG,
-    getEnvironmentConnectionOptions,
-} from './configuration/waldoEnvironment.js';
+import { getEnvironmentConnectionOptions } from './configuration/waldoEnvironment.js';
 import { type Configuration, loadConfiguration } from './configuration/configuration.js';
 import type { WaldoServiceOptions, CapabilitiesWithWaldo } from './types.js';
 
@@ -27,7 +21,7 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
         this.configureRemoteInAllCapabilities(config, capabilities, this.configuration);
     }
 
-    private async configureRemoteInAllCapabilities(
+    private configureRemoteInAllCapabilities(
         config: Options.Testrunner,
         capabilities: Capabilities.RemoteCapabilities,
         configuration: Configuration,
@@ -36,16 +30,16 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
             for (const cap of capabilities) {
                 const alwaysMatch = 'alwaysMatch' in cap ? cap.alwaysMatch : cap;
                 this.checkCapabilities(config, alwaysMatch, configuration);
-                await this.overrideRemoteInCapabilities(alwaysMatch);
+                this.overrideRemoteInCapabilities(alwaysMatch);
             }
         } else if (typeof capabilities === 'object' && capabilities !== null) {
             for (const cap of Object.values(capabilities)) {
                 this.checkCapabilities(config, cap, configuration);
-                await this.overrideRemoteInCapabilities(cap);
+                this.overrideRemoteInCapabilities(cap);
             }
         }
 
-        await this.overrideRemoteInCapabilities(config);
+        this.overrideRemoteInCapabilities(config);
     }
 
     private checkCapabilities(
@@ -85,7 +79,7 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
         }
     }
 
-    private async overrideRemoteInCapabilities(capabilities: Options.Connection): Promise<void> {
+    private overrideRemoteInCapabilities(capabilities: Options.Connection): void {
         const remoteConfig = getEnvironmentConnectionOptions(
             this.serviceOptions.environment ?? this.configuration?.environment,
         );
