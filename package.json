@@ -20,8 +20,10 @@
     "type": "module",
     "scripts": {
         "build": "tsc",
-        "prettier": "prettier . --write",
-        "prettier:check": "prettier . --check"
+        "eslint:fix": "yarn eslint --cache --cache-location=node_modules/.cache/eslint/ --fix .",
+        "eslint:check": "yarn eslint --cache --cache-location=node_modules/.cache/eslint/ .",
+        "prettier:fix": "prettier --cache --write .",
+        "prettier:check": "prettier --cache --check ."
     },
     "bin": {
         "waldo-auth": "dist/bin/waldo-auth.js"
@@ -39,10 +41,16 @@
     "devDependencies": {
         "@types/lodash": "^4.17.4",
         "@types/node": "^18.0.0",
+        "@typescript-eslint/eslint-plugin": "^7.12.0",
+        "@typescript-eslint/parser": "^7.12.0",
         "@wdio/protocols": "^8.0.0",
         "@wdio/types": "^8.0.0",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
         "prettier": "^3.3.0",
         "typescript": "^5.4.5",
+        "typescript-eslint": "^7.12.0",
         "webdriverio": "^8.0.0"
     },
     "files": [

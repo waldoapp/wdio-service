@@ -91,4 +91,4 @@ async function main() {
     console.log(`Captured Waldo credentials at ${profilePath}`);
 }
 
-main();
+void main();

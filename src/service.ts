@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import open from 'open';
 
 import logger from '@wdio/logger';
@@ -6,11 +5,11 @@ import type { Services, Frameworks } from '@wdio/types';
 
 import { addDriverCommands } from './commands.js';
 import { waitForSessionReady } from './utils.js';
-import type { CapabilitiesWithWaldo, WaldoRemoteCapability, WaldoServiceOptions } from './types.js';
+import type { CapabilitiesWithWaldo, WaldoRemoteCapability } from './types.js';
 
 const log = logger('@waldoapp/wdio-service');
 
-declare var driver: WebdriverIO.Browser;
+declare const driver: WebdriverIO.Browser;
 
 export class WaldoWdioService implements Services.ServiceInstance {
     async before(
@@ -29,7 +28,7 @@ export class WaldoWdioService implements Services.ServiceInstance {
         // Open Waldo session in browser if not in interactive mode
         if (waldoOptions.showSession && !waldoOptions.sessionId) {
             if (replayUrl?.startsWith('http://') || replayUrl?.startsWith('https://')) {
-                open(replayUrl);
+                void open(replayUrl);
             }
         }
 
@@ -55,7 +54,10 @@ export class WaldoWdioService implements Services.ServiceInstance {
                 `Test "${test.title}": Failed: ${error} (${duration}ms)`,
                 {
                     file: test.file,
-                    error: String(error?.message),
+                    error:
+                        typeof error === 'object' && 'message' in error
+                            ? String(error.message)
+                            : '',
                     result,
                 },
                 'error',
