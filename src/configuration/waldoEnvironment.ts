@@ -8,22 +8,23 @@ export type EnvironmentConnection = {
     readonly path: NonNullable<Options.Connection['path']>;
 };
 
-export const DEFAULT_REMOTE_CONFIG: EnvironmentConnection = {
+export const PRODUCTION_CONNECTION: EnvironmentConnection = {
     hostname: 'core.waldo.com',
     port: 443,
     protocol: 'https',
     path: '/wd/hub',
 };
 
-export const STAGING_REMOTE_CONFIG: EnvironmentConnection = {
-    ...DEFAULT_REMOTE_CONFIG,
+export const STAGING_CONNECTION: EnvironmentConnection = {
+    ...PRODUCTION_CONNECTION,
     hostname: 'core-staging.waldo.io',
 };
 
-export const LOCAL_REMOTE_CONFIG: EnvironmentConnection = {
-    ...DEFAULT_REMOTE_CONFIG,
+export const DEVELOPMENT_CONNECTION: EnvironmentConnection = {
+    ...PRODUCTION_CONNECTION,
     hostname: 'localhost',
     port: 3035,
+    protocol: 'http',
 };
 
 export function parseEnvironment(value: string | undefined): WaldoEnvironment | undefined {
@@ -42,10 +43,10 @@ export function getEnvironmentConnectionOptions(
 ): EnvironmentConnection {
     switch (environment) {
         case 'staging':
-            return STAGING_REMOTE_CONFIG;
+            return STAGING_CONNECTION;
         case 'development':
-            return LOCAL_REMOTE_CONFIG;
+            return DEVELOPMENT_CONNECTION;
         default:
-            return DEFAULT_REMOTE_CONFIG;
+            return PRODUCTION_CONNECTION;
     }
 }
