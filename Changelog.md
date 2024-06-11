@@ -1,3 +1,8 @@
+## Version 0.1.8
+
+- Fix local development configuration (Internal)
+- Document the `waldo:displayName` key in capabilities
+
 ## Version 0.1.7
 
 - Various fixes to exported type definitions
