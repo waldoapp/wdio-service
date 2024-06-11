@@ -64,6 +64,10 @@ export type WaldoCapabilityOptions = WaldoSharedOptions & {
 };
 
 export type WaldoCapabilities = {
+    /** Name of the session that will appear in Waldo session history */
+    'waldo:displayName'?: string;
+
+    /** Waldo specific options */
     'waldo:options'?: WaldoCapabilityOptions;
 };
 
