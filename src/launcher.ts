@@ -4,6 +4,10 @@ import { getEnvironmentConnectionOptions } from './configuration/waldoEnvironmen
 import { type Configuration, loadConfiguration } from './configuration/configuration.js';
 import type { WaldoServiceOptions, CapabilitiesWithWaldo } from './types.js';
 
+import logger from '@wdio/logger';
+
+const log = logger('@waldoapp/wdio-service');
+
 export class WaldoWdioLauncherService implements Services.ServiceInstance {
     private serviceOptions: WaldoServiceOptions;
 
@@ -80,9 +84,12 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
     }
 
     private overrideRemoteInCapabilities(capabilities: Options.Connection): void {
-        const remoteConfig = getEnvironmentConnectionOptions(
-            this.serviceOptions.environment ?? this.configuration?.environment,
-        );
+        const environment =
+            this.serviceOptions.environment ?? this.configuration?.environment ?? 'production';
+
+        log.debug(`Connecting to Waldo ${environment} environment`);
+
+        const remoteConfig = getEnvironmentConnectionOptions(environment);
 
         /* eslint-disable no-param-reassign */
         capabilities.hostname = remoteConfig.hostname;
