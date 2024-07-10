@@ -1,6 +1,5 @@
 import type { Capabilities } from '@wdio/types';
-
-import type { AppiumElement } from './utils.js';
+import type { ElementReference } from '@wdio/protocols';
 
 export type WaldoEnvironment = 'production' | 'staging' | 'development';
 
@@ -16,11 +15,6 @@ type WaldoSharedOptions = {
      * environment variable.
      */
     token?: string;
-
-    /**
-     * Use the non-appium compatible Waldo tree.
-     */
-    waldoMode?: boolean;
 
     /**
      * Wait for the session to be fully ready and the application launched before starting the test.
@@ -66,6 +60,19 @@ export type WaldoCapabilityOptions = WaldoSharedOptions & {
 export type WaldoCapabilities = {
     /** Name of the session that will appear in Waldo session history */
     'waldo:displayName'?: string;
+
+    /**
+     * Type of automation to use
+     *
+     * - `'UiAutomator2'`, `'XCUITest'` and `'Appium'` emulate Appium.
+     * - `'Waldo'` is the full automation.
+     *
+     * Default is to emulate Appium for the application platform. (`'UiAutomator2'` for android and `'XCUITest'`
+     * for iOS)
+     *
+     * Case insensitive
+     */
+    'waldo:automationName'?: string;
 
     /** Waldo specific options */
     'waldo:options'?: WaldoCapabilityOptions;
@@ -181,3 +188,20 @@ export type WaldoBrowser = {
 };
 
 export type BrowserWithWaldo = WebdriverIO.Browser & WaldoBrowser;
+
+export type AppiumElement = ElementReference & { ELEMENT: string };
+
+export type SessionDevice = {
+    model: string;
+    os: 'android' | 'ios';
+    osVersion: string;
+    screen: { width: number; height: number };
+};
+
+export type SessionInfo = {
+    status: 'complete' | 'failed' | 'setup' | 'ready';
+    id: string;
+    device: SessionDevice;
+};
+
+export type SwipeDirection = 'vertical' | 'horizontal';

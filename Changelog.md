@@ -1,3 +1,8 @@
+## Version 0.2.0
+
+- Add `waldo:automationName` to capabilities and document it's usage.
+- Migrate operations on waldo tree to the new XML format returned by the server.
+
 ## Version 0.1.8
 
 - Fix local development configuration (Internal)

@@ -1,6 +1,6 @@
 {
     "name": "@waldoapp/wdio-service",
-    "version": "0.1.8",
+    "version": "0.2.0",
     "description": "Webdriver.io service for Waldo",
     "homepage": "https://www.waldo.com/scripting",
     "bugs": {
@@ -19,7 +19,10 @@
     "main": "dist/index.js",
     "type": "module",
     "scripts": {
-        "build": "tsc",
+        "build": "rm -rf dist && tsc",
+        "build:pack": "rm -rf dist && tsc -p tsconfig.pack.json",
+        "test": "vitest",
+        "prepack": " yarn build:pack",
         "eslint:fix": "yarn eslint --cache --cache-location=node_modules/.cache/eslint/ --fix .",
         "eslint:check": "yarn eslint --cache --cache-location=node_modules/.cache/eslint/ .",
         "prettier:fix": "prettier --cache --write .",
@@ -35,14 +38,17 @@
         "axios": "^1.0.0",
         "lodash": "^4.0.0",
         "open": "^8.0.0",
+        "sax": "^1.4.1",
         "webdriver": "^8.0.0",
         "yaml": "^2.0.0"
     },
     "devDependencies": {
         "@types/lodash": "^4.17.4",
         "@types/node": "^18.0.0",
+        "@types/sax": "^1.2.7",
         "@typescript-eslint/eslint-plugin": "^7.12.0",
         "@typescript-eslint/parser": "^7.12.0",
+        "@wdio/globals": "^8.0.0",
         "@wdio/protocols": "^8.0.0",
         "@wdio/types": "^8.0.0",
         "eslint": "^8.57.0",
@@ -51,7 +57,8 @@
         "prettier": "^3.3.0",
         "typescript": "^5.4.5",
         "typescript-eslint": "^7.12.0",
-        "webdriverio": "^8.0.0"
+        "vitest": "^2.0",
+        "webdriverio": "^8.0"
     },
     "files": [
         "dist"
