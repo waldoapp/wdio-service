@@ -90,11 +90,9 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
 
         const remoteConfig = getEnvironmentConnectionOptions(environment);
 
-        /* eslint-disable no-param-reassign */
         capabilities.hostname = remoteConfig.hostname;
         capabilities.port = remoteConfig.port;
         capabilities.protocol = remoteConfig.protocol;
         capabilities.path = remoteConfig.path;
-        /* eslint-enable no-param-reassign */
     }
 }
