@@ -4,7 +4,10 @@ import type {
     WaldoTreeWindow,
     WaldoVisibility,
 } from './tree-types.js';
-import { type SAXParser, parser as saxParser, type Tag } from 'sax';
+import type { SAXParser, Tag } from 'sax';
+import sax from 'sax';
+
+const { parser: saxParser } = sax;
 
 export class WaldoTreeParsingError extends Error {
     readonly xml: string;
