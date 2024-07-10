@@ -1,5 +1,6 @@
 import type { Capabilities } from '@wdio/types';
 import type { ElementReference } from '@wdio/protocols';
+import { WaldoTree, WaldoTreeElement } from './tree-types.js';
 
 export type WaldoEnvironment = 'production' | 'staging' | 'development';
 
@@ -105,20 +106,20 @@ export type WaldoBrowser = {
     resetApp(): Promise<void>;
     tapElement(
         property: string,
-        value: any,
+        value: string,
         timeout?: number,
         delay?: number,
         waitForStability?: boolean,
     ): Promise<void>;
     tapElementWith(
-        predicate: (n: any) => boolean,
+        predicate: (n: WaldoTreeElement) => boolean,
         position?: number | 'first' | 'last',
         retries?: number,
         delay?: number,
     ): Promise<void>;
     typeInElement(
         property: string,
-        value: any,
+        value: string,
         text: string,
         timeout?: number,
         delay?: number,
@@ -133,7 +134,7 @@ export type WaldoBrowser = {
     tap(x: number, y: number): Promise<void>;
     waitForElement(
         property: string,
-        value: any,
+        value: string,
         timeout?: number,
         delay?: number,
         waitForStability?: boolean,
@@ -143,7 +144,22 @@ export type WaldoBrowser = {
      * Simulate a 'tap' gesture at the center of the given bounding box.
      */
     tapCenterOfBox(box: BoundingBox): Promise<void>;
-    getNodes(predicate: (n: any) => boolean): Promise<any[]>;
+
+    /**
+     * Get all nodes in the Waldo tree that match the given predicate.
+     *
+     * **Note**: This command is only available when using the Waldo automation via the
+     * `'waldo:automationName': 'Waldo'` capability.
+     */
+    getNodes(predicate?: (n: WaldoTreeElement) => boolean): Promise<WaldoTreeElement[]>;
+
+    /**
+     * Parse the current Waldo tree returned by `getPageSource()` and return it as a JSON object.
+     *
+     * **Note**: This command is only available when using the Waldo automation via the
+     * `'waldo:automationName': 'Waldo'` capability.
+     */
+    getWaldoTree(): Promise<WaldoTree>;
 
     /**
      * Simulate a 'swipe' gesture in the given direction.
