@@ -5,7 +5,7 @@ import type { WaldoBrowser, WaldoCapabilities, WaldoServiceOptions } from './typ
 export default WaldoWdioService;
 export const launcher = WaldoWdioLauncherService;
 
-export * from './types.js';
+export type * from './types.js';
 
 declare global {
     namespace WebdriverIO {

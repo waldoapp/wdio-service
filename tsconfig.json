@@ -14,7 +14,7 @@
         "isolatedModules": true,
         "removeComments": false,
         "rootDir": "./src",
-        "types": ["node", "webdriverio"]
+        "types": ["node", "webdriverio", "@wdio/globals/types", "vitest/globals"]
     },
     "include": ["src/**/*"]
 }

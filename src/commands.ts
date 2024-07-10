@@ -5,7 +5,7 @@ import process from 'process';
 import { command } from 'webdriver';
 import logger from '@wdio/logger';
 
-import { BoundingBox } from './types.js';
+import { BoundingBox, SwipeDirection } from './types.js';
 import {
     tapElement,
     tapElementWith,
@@ -13,11 +13,12 @@ import {
     performTap,
     waitForElement,
     tapCenterOfBox,
-    findInTree,
-    SwipeDirection,
     swipeScreen,
     logEvent,
+    findInTree,
+    getWaldoTree,
 } from './utils.js';
+import { WaldoTreeElement } from './tree-types.js';
 
 const log = logger('@waldoapp/wdio-service');
 
@@ -37,7 +38,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         async function commandFn(
             this: WebdriverIO.Browser,
             property: string,
-            value: any,
+            value: string,
             timeout: number = 5000,
             delay: number = 500,
             waitForStability: boolean = false,
@@ -73,7 +74,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         async function commandFn(
             this: WebdriverIO.Browser,
             property: string,
-            value: any,
+            value: string,
             timeout: number = 5000,
             delay: number = 500,
             waitForStability: boolean = false,
@@ -86,7 +87,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         'tapElementWith',
         async function commandFn(
             this: WebdriverIO.Browser,
-            predicate: (n: any) => boolean,
+            predicate: (n: WaldoTreeElement) => boolean,
             position: number | 'first' | 'last' = 0,
             retries: number = 3,
             delay: number = 500,
@@ -100,7 +101,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         async function commandFn(
             this: WebdriverIO.Browser,
             property: string,
-            value: any,
+            value: string,
             text: string,
             timeout: number = 5000,
             delay: number = 500,
@@ -122,7 +123,7 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         async function commandFn(
             this: WebdriverIO.Browser,
             property: string,
-            value: any,
+            value: string,
             timeout: number = 5000,
             delay: number = 500,
             waitForStability: boolean = false,
@@ -133,15 +134,21 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
 
     driver.addCommand(
         'tapCenterOfBox',
-        // eslint-disable-next-line prefer-arrow-callback
         async function commandFn(this: WebdriverIO.Browser, box: BoundingBox) {
             return tapCenterOfBox(this, box);
         },
     );
 
+    driver.addCommand('getWaldoTree', async function commandFn(this: WebdriverIO.Browser) {
+        return getWaldoTree(this);
+    });
+
     driver.addCommand(
         'getNodes',
-        async function commandFn(this: WebdriverIO.Browser, predicate: (n: any) => boolean) {
+        async function commandFn(
+            this: WebdriverIO.Browser,
+            predicate: (n: WaldoTreeElement) => boolean,
+        ) {
             return findInTree(this, predicate);
         },
     );

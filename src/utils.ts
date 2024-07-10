@@ -1,26 +1,13 @@
 import _ from 'lodash';
 import axios from 'axios';
 import logger from '@wdio/logger';
-import type { ElementReference } from '@wdio/protocols';
 
 import { getRemoteBaseUrl, getWdUrl } from './urls.js';
-import { BoundingBox } from './types.js';
+import type { AppiumElement, BoundingBox, SessionInfo, SwipeDirection } from './types.js';
+import type { WaldoTree, WaldoTreeElement } from './tree-types.js';
+import { parseXmlAsWaldoTree } from './tree-parser.js';
 
 const log = logger('@waldoapp/wdio-service');
-
-export type AppiumElement = ElementReference & { ELEMENT: string };
-export type SessionDevice = {
-    model: string;
-    os: 'android' | 'ios';
-    osVersion: string;
-    screen: { width: number; height: number };
-};
-export type SessionInfo = {
-    status: 'complete' | 'failed' | 'setup' | 'ready';
-    id: string;
-    device: SessionDevice;
-};
-export type SwipeDirection = 'vertical' | 'horizontal';
 
 export async function waitAsPromise(timeMillis: number) {
     await new Promise<void>((resolve): void => {
@@ -162,7 +149,7 @@ export async function tapCenterOfBox(driver: WebdriverIO.Browser, box: BoundingB
 export async function waitForElement(
     driver: WebdriverIO.Browser,
     property: string,
-    value: any,
+    value: string,
     timeout: number = 5000,
     delay: number = 500,
     waitForStability: boolean = false,
@@ -247,24 +234,49 @@ export async function waitForElementGone(
     );
 }
 
-export async function getTree(driver: WebdriverIO.Browser) {
+export async function getWaldoTree(driver: WebdriverIO.Browser): Promise<WaldoTree> {
     const treeString = await driver.getPageSource();
-    return JSON.parse(treeString);
+
+    return parseXmlAsWaldoTree(treeString);
 }
 
-export async function findInTree(driver: WebdriverIO.Browser, predicate: (n: any) => boolean) {
-    const tree = await getTree(driver);
-    const nodes: any[] = [];
-    for (const treeWindow of tree.windows) {
-        nodes.push(...treeWindow.nodes.filter((n: any) => predicate(n)));
+export function* enumerateTreeElements(tree: WaldoTree): Iterable<WaldoTreeElement> {
+    for (const window of tree.windows) {
+        const stack = [window.root];
+        while (stack.length > 0) {
+            const node = stack.pop();
+            if (node) {
+                stack.push(...node.children);
+                yield node;
+            }
+        }
     }
-    return nodes;
+}
+
+export function* filter<T>(iterable: Iterable<T>, selector: (value: T) => boolean): Iterable<T> {
+    for (const value of iterable) {
+        if (selector(value)) {
+            yield value;
+        }
+    }
+}
+
+export function findInWaldoTree(tree: WaldoTree, predicate: (n: WaldoTreeElement) => boolean) {
+    return [...filter(enumerateTreeElements(tree), predicate)];
+}
+
+export async function findInTree(
+    driver: WebdriverIO.Browser,
+    predicate: (n: WaldoTreeElement) => boolean,
+) {
+    const tree = await getWaldoTree(driver);
+    return findInWaldoTree(tree, predicate);
 }
 
 export async function tapElement(
     driver: WebdriverIO.Browser,
     property: string,
-    value: any,
+    value: string,
     timeout: number = 5000,
     delay: number = 500,
     waitForStability: boolean = false,
@@ -278,7 +290,7 @@ export async function tapElement(
  */
 export async function tapElementWith(
     driver: WebdriverIO.Browser,
-    predicate: (n: any) => boolean,
+    predicate: (n: WaldoTreeElement) => boolean,
     position: number | 'first' | 'last' = 0,
     retries: number = 3,
     delay: number = 500,
@@ -296,7 +308,12 @@ export async function tapElementWith(
             }
 
             if (node) {
-                await tapCenterOfBox(driver, node.box);
+                await tapCenterOfBox(driver, {
+                    width: node.width,
+                    height: node.height,
+                    top: node.y,
+                    left: node.x,
+                });
                 return;
             }
         }
@@ -308,7 +325,7 @@ export async function tapElementWith(
 export async function typeInElement(
     driver: WebdriverIO.Browser,
     property: string,
-    value: any,
+    value: string,
     text: string,
     timeout: number = 5000,
     delay: number = 500,

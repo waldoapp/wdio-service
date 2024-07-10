@@ -67,7 +67,6 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
             waldoOptions.sessionId ?? this.serviceOptions.sessionId ?? configuration.sessionId;
         waldoOptions.waitSessionReady =
             waldoOptions.waitSessionReady ?? this.serviceOptions.waitSessionReady;
-        waldoOptions.waldoMode = waldoOptions.waldoMode ?? this.serviceOptions.waldoMode;
         waldoOptions.showSession =
             waldoOptions.showSession ??
             this.serviceOptions.showSession ??
