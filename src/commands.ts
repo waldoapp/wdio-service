@@ -147,9 +147,9 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         'getNodes',
         async function commandFn(
             this: WebdriverIO.Browser,
-            predicate: (n: WaldoTreeElement) => boolean,
+            predicate?: (n: WaldoTreeElement) => boolean,
         ) {
-            return findInTree(this, predicate);
+            return findInTree(this, predicate ?? (() => true));
         },
     );
 
