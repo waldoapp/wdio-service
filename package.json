@@ -6,7 +6,10 @@
     "bugs": {
         "url": "https://github.com/waldoapp/wdio-service/issues"
     },
-    "repository": "github:waldoapp/wdio-service",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/waldoapp/wdio-service.git"
+    },
     "keywords": [
         "webdriver",
         "wdio",
