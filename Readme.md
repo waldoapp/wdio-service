@@ -1,8 +1,9 @@
 # WebdriverIO Waldo Service
 
+[![NPM](https://img.shields.io/npm/v/%40waldoapp%2Fwdio-service)](https://www.npmjs.com/package/@waldoapp/wdio-service)
 [![CI](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml/badge.svg)](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml)
 
-A WebdriverIO service that provides better integration with [Waldo](https://www.waldo.com/scripting).
+A [WebdriverIO](https://webdriver.io/) service that provides better integration with [Waldo](https://www.waldo.com/scripting).
 
 This package provides:
 
