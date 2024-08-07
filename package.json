@@ -45,6 +45,9 @@
         "webdriver": "^8.0.0",
         "yaml": "^2.0.0"
     },
+    "peerDependencies": {
+        "webdriverio": "^8.0"
+    },
     "devDependencies": {
         "@eslint/js": "^9.6.0",
         "@types/lodash": "^4.17.4",
@@ -58,8 +61,7 @@
         "eslint-config-prettier": "^9.1.0",
         "prettier": "^3.3.2",
         "typescript": "^5.4.5",
-        "vitest": "^2.0",
-        "webdriverio": "^8.0"
+        "vitest": "^2.0"
     },
     "files": [
         "dist"
