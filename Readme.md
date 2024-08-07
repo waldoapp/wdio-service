@@ -80,6 +80,8 @@ Opens the Waldo interactive session viewer in a browser when the test is started
 
 This option has no effect when the `sessionId` option is specified.
 
+This option can also be configured by setting the `WALDO_SHOW_SESSION` (or `SHOW_SESSION`) environment variable to `1`.
+
 Type: `boolean` <br/>
 Default: `false`
 
