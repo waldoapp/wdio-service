@@ -13,8 +13,10 @@ This package provides:
 
 ## Installation
 
-The easiest way to install this package is to define `@waldoapp/wdio-service` as a `devDependency` in your
-`package.json`:
+### In an existing WebDriverIO project
+
+The easiest way to install this package in an existing WebDriverIO project is to add the
+`@waldoapp/wdio-service` package as a `devDependency` in your `package.json`:
 
 ```sh
 npm install @waldoapp/wdio-service --save-dev
