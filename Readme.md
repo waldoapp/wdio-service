@@ -19,6 +19,7 @@ Table of contents:
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Waldo service options](#waldo-service-options)
+- [Additional commands](#additional-commands)
 
 ## Requirements
 
