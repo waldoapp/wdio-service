@@ -160,7 +160,7 @@ When you execute a script that uses Waldo Scripting, the script always uses a re
 simulator/emulator running within the Waldo infrastructure.
 
 There are multiple ways to start a session depending on if you are developing a new script,
-running tests locally to verify a change or integrating with Continuous Integration (CI).
+running tests locally to verify a change or running the test during Continuous Integration (CI).
 
 ### Interactive execution
 
@@ -175,11 +175,16 @@ To do so you need to provide the session ID that can be obtained by using the `U
 button of the `Info` tab or from the URL (they are prefixed with `sess-`, such as `sess-1234567890abcdef`).
 
 ```shell
-SESSION_ID=[SessionID] npm run wdio
+SESSION_ID=[SessionID] npm run wdio -- --spec [YourScript]
 ```
 
-_Note_: in this mode, it is not necessary to specify `VERSION_ID` since the remote session was already
-started with a specific app version.
+> [!NOTE]
+> in this mode, it is not necessary to specify `VERSION_ID` since the remote session was already
+> started with a specific app version.
+
+> [!WARNING]
+> If you have multiple test files and don't specify a `--spec` option, all of them will be executed at the
+> same time, on the **SAME** device session.
 
 This mode is very useful for creating a new script or editing an existing one, since it allows you
 to quickly relaunch your app over and over without waiting for session initialization. In addition,
@@ -191,11 +196,15 @@ as use the tree inspector to determine the best way to locate an element.
 In this mode, your script interacts with a freshly created remote session, where you can
 watch its execution in a browser in real time.
 
-For an example of running a script in live execution mode, try:
+It is enabled by setting the `SHOW_SESSION` environment variable to `1`:
 
 ```shell
-VERSION_ID=[VersionID] SHOW_SESSION=1 npm run wdio
+VERSION_ID=[VersionID] SHOW_SESSION=1 npm run wdio -- --spec [YourScript]
 ```
+
+> [!TIP]
+> It's often better to always specify a single test file via the `--spec` option to avoid a
+> lot of browser tabs openning at the same time.
 
 This mode is very useful when you want to watch the current behavior of a script against a new
 application version or to reproduce an issue noticed in CI.
@@ -208,7 +217,7 @@ session that is killed when execution reaches the end of the script.
 You do not have any visual feedback of what is happening; however, you can watch
 the replay of the execution at a later time.
 
-For an example of running a script in background execution mode, try:
+It is the default mode and simply needs a version ID to target:
 
 ```shell
 VERSION_ID=[VersionID] npm run wdio
