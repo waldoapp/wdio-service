@@ -178,11 +178,13 @@ button of the `Info` tab or from the URL (they are prefixed with `sess-`, such a
 SESSION_ID=[SessionID] npm run wdio -- --spec [YourScript]
 ```
 
-> [!NOTE]
+> ℹ️ **Note**
+>
 > in this mode, it is not necessary to specify `VERSION_ID` since the remote session was already
 > started with a specific app version.
 
-> [!WARNING]
+> ⚠️️ **Warning**
+>
 > If you have multiple test files and don't specify a `--spec` option, all of them will be executed at the
 > same time, on the **SAME** device session.
 
@@ -202,7 +204,8 @@ It is enabled by setting the `SHOW_SESSION` environment variable to `1`:
 VERSION_ID=[VersionID] SHOW_SESSION=1 npm run wdio -- --spec [YourScript]
 ```
 
-> [!TIP]
+> 💡 **Tip**
+>
 > It's often better to always specify a single test file via the `--spec` option to avoid a
 > lot of browser tabs openning at the same time.
 
