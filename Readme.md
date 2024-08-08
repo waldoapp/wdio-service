@@ -294,8 +294,8 @@ Most of the service options can also be specified in the capabilities object for
 capabilities: [
   {
     platformName: 'Android',
-    deviceName: 'Pixel 3a',
     'waldo:options': {
+      deviceName: 'Pixel 3a',
       showSession: true,
     },
   },
