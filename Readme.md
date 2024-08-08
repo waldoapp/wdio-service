@@ -12,6 +12,14 @@ This package provides:
 - A collection of additional commands to ease mobile testing.
 - A TypeScript definition for the options and mobile-specific capabilities.
 
+Table of contents:
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Waldo service options](#waldo-service-options)
+
 ## Requirements
 
 - Node.js version 18 or later
