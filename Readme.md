@@ -3,7 +3,8 @@
 [![NPM](https://img.shields.io/npm/v/%40waldoapp%2Fwdio-service)](https://www.npmjs.com/package/@waldoapp/wdio-service)
 [![CI](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml/badge.svg)](https://github.com/waldoapp/wdio-service/actions/workflows/build.yaml)
 
-A [WebdriverIO](https://webdriver.io/) service that provides better integration with [Waldo](https://www.waldo.com/scripting).
+A [WebdriverIO](https://webdriver.io/) service that provides better integration with
+[Waldo](https://www.waldo.com/scripting).
 
 This package provides:
 
@@ -28,7 +29,8 @@ The easiest way to get started with this package if you aren't already using Web
 
 ### Starting from scratch
 
-Full instructions on how to install `WebdriverIO` can be found [here](https://webdriver.io/docs/gettingstarted), but the easiest way is to use the CLI:
+Full instructions on how to install `WebdriverIO` can be found [here](https://webdriver.io/docs/gettingstarted),
+but the easiest way is to use the CLI:
 
 ```sh
 npm init wdio@latest .
@@ -67,7 +69,8 @@ To add this package in an existing WebDriverIO project is to add the `@waldoapp/
 npm install @waldoapp/wdio-service --save-dev
 ```
 
-If you use TypeScript you'll also need to reference package for the types to be available, in `tsconfig.json` add `@waldoapp/wdio-service` to the types array:
+If you use TypeScript you'll also need to reference package for the types to be available,
+in `tsconfig.json` add `@waldoapp/wdio-service` to the types array:
 
 ```json
 {
@@ -251,7 +254,8 @@ Default: `true`
 
 ### sessionId
 
-The ID of an existing Waldo session (created via `Sessions > Live > Start session`) to connect to. This is useful for interactive development.
+The ID of an existing Waldo session (created via `Sessions > Live > Start session`) to connect to.
+This is useful for interactive development.
 
 The session ID can also be specified with the `WALDO_SESSION_ID` (or `SESSION_ID`) environment variable.
 
@@ -296,7 +300,9 @@ this is the equivalent of providing `UiAutomator2`, `UiAutomator2` or `Appium` a
 This makes it easy to port existing Appium scripts to Waldo but is based mainly on the accessibility view of the
 application.
 
-The `Waldo` automation name can also be used to enable same mode that is used by Waldo Automate. In this mode the tree returned is typically _more complete_ as it unifies native elements, Web views, React Native, and Flutter elements.
+The `Waldo` automation name can also be used to enable same mode that is used by Waldo Automate.
+In this mode the tree returned is typically _more complete_ as it unifies native elements, Web views, React Native,
+and Flutter elements.
 
 The `Waldo` automation name is required to use some of the additional commands added by this service like
 `getWaldoTree`, `getNodes` and `tapElementWith`.
