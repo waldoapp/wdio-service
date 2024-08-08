@@ -130,6 +130,9 @@ export type WaldoBrowser = {
      * Simulate a 'tap' gesture at the given coordinates.
      *
      * This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerUp`.
+     *
+     * @param x The x-coordinate of the tap
+     * @param y The y-coordinate of the tap
      */
     tap(x: number, y: number): Promise<void>;
     waitForElement(

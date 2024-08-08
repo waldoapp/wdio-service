@@ -126,6 +126,11 @@ export const config: WebdriverIO.Config = {
       },
     },
   ],
+
+  mochaOpts: {
+    // The default value is pretty low for mobile testing
+    timeout: 10 * 60 * 1000,
+  },
 };
 ```
 
@@ -363,3 +368,107 @@ If this option is not specified, the default device configured for the app in Wa
 
 Type: `string` <br/>
 Default: `undefined`
+
+## Additional commands
+
+In addition to configuring Waldo as a remote WebDriver endpoint this package also adds the following commands on the
+driver object:
+
+### tap
+
+Simulate a 'tap' gesture at the given coordinates.
+
+This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerUp`.
+
+Example:
+
+```ts
+await driver.tap(100, 100);
+```
+
+### tapCenterOfBox
+
+Simulate a 'tap' gesture at the center of the given bounding box.
+
+Example:
+
+```ts
+await driver.tap({ left: 100, y: 100, width: 200, height: 200 });
+```
+
+### getNodes
+
+Get all nodes in the Waldo tree that match the given predicate
+
+> ℹ️ **Note**
+>
+> This command is only available when using the Waldo automation via the
+> `'waldo:automationName': 'Waldo'` capability.
+
+Example:
+
+```ts
+const okButtons = await driver.getNodes(
+  // Find all nodes with a text that contains 'ok' case insensitive
+  (n) => n.text && n.text.match(/ok/i) !== null,
+);
+```
+
+### getWaldoTree
+
+Parse the current Waldo tree returned by `getPageSource()` and return it as a JSON object.
+
+> ℹ️ **Note**
+>
+> This command is only available when using the Waldo automation via the
+> `'waldo:automationName': 'Waldo'` capability.
+
+### swipeScreen
+
+Simulate a 'swipe' gesture in the given direction.
+
+The default movement without any options is a horizontal swipe from right (`95`) to left (`5`).
+
+This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerMove`, `pointerUp`.
+
+Parameters:
+
+- `direction`: The direction of the swipe, either `vertical` or `horizontal`. Default to `horizontal`.
+- `fromScreenPercent`: The starting point of the swipe as a percentage of the screen size. Default to `95`.
+- `toScreenPercent`: The ending point of the swipe as a percentage of the screen size. Default to `5`.
+
+Example:
+
+```ts
+await driver.swipeScreen('vertical', 90, 10);
+```
+
+### screenshot
+
+A simplified wrapper around the `saveScreenshot` command that saves the screenshot to a file in the
+`./screenshots/` directory, creating it if necessary.
+
+> ℹ️ **Note**
+>
+> If an absolute path is provided, this function is equivalent to calling `saveScreenshot`
+> directly.
+
+Example:
+
+```ts
+await driver.screenshot('my-screenshot.png');
+```
+
+### log
+
+Send a log line that will be visible in the Waldo Session Viewer
+
+- `message`: The message to log
+- `payload`: Additional data to log that will be visible when the log line is selected
+- `level`: The log level, one of `debug`, `info`, `warn`, or `error`. Default to `info`.
+
+Example:
+
+```ts
+await driver.log('Found logged in user', { name: detectedUserName }, 'debug');
+```
