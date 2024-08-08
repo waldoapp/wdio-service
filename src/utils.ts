@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import logger from '@wdio/logger';
 
 import { getRemoteBaseUrl, getWdUrl } from './urls.js';
@@ -59,7 +59,21 @@ export async function logEvent(
     level: 'debug' | 'info' | 'warn' | 'error' = 'info',
 ) {
     const url = `${getRemoteBaseUrl(driver)}/wd/hub/session/${driver.sessionId}/timelineEvent`;
-    await axios.post(url, { level, message, payload });
+    try {
+        await axios.post(url, { level, message, payload });
+    } catch (e: unknown) {
+        let errorMessage = 'Failed';
+        if (e instanceof Error) {
+            errorMessage = e.message;
+        }
+        let data: any = undefined;
+        if (e instanceof AxiosError) {
+            data = e.response?.data;
+        }
+
+        // Log the problem locally but don't fail the test
+        log.error(`Failed to log event "${message}": ${errorMessage}`, data);
+    }
 }
 
 export function performTap(driver: WebdriverIO.Browser, x: number, y: number) {
