@@ -16,7 +16,7 @@ This package provides:
 
 - Node.js version 18 or later
 - WebdriverIO version 8
-- A [Waldo][waldo] account: [sign up here][signup]
+- A Waldo account: [sign up here](https://app.waldo.com/register)
 
 ## Installation
 
