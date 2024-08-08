@@ -132,7 +132,7 @@ The API token can be either a user-scoped token for development found in the
 token found in the [“General” tab of the “Configuration”](https://app.waldo.com/applications/0/configurations/general)
 for your app.
 
-On developer machines the token can also be stored in a local profile `.waldo/profile.yml` and is automatically picked
+On developer machines the token can also be stored in a local profile `~/.waldo/profile.yml` and is automatically picked
 up, a script is provided in this package to fill it:
 
 ```sh
