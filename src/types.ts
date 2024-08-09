@@ -106,6 +106,65 @@ export type BoundingBoxLike = BoundingBox | Pick<WaldoTreeElement, 'x' | 'y' | '
 
 export type WaldoBrowser = {
     resetApp(): Promise<void>;
+
+    /**
+     * Wait until an element appears that has the `property` equal to `value` and returns it.
+     *
+     * An error will be thrown if the element can't be found after the timeout.
+     *
+     * Example:
+     *
+     * ```ts
+     * const element = await driver.waitForElement('text', 'Hello, World!');
+     * ```
+     *
+     * @param property Name of the property to match on elements
+     * @param value Expected value of the property
+     * @param timeout Maximum time in milliseconds to wait for the element to appear. Default to `5000`.
+     * @param delay Interval in milliseconds between checks for the element. Default to `500`.
+     * @param waitForStability If enabled wait for the element position to stabilize before tapping. Default to `false`.
+     */
+    waitForElement(
+        property: string,
+        value: string,
+        timeout?: number,
+        delay?: number,
+        waitForStability?: boolean,
+    ): Promise<AppiumElement>;
+
+    /**
+     * Simulate a 'tap' gesture at the given coordinates.
+     *
+     * This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerUp`.
+     *
+     * Example:
+     *
+     * ```ts
+     * await driver.tap(100, 200);
+     * ```
+     *
+     * @param x The x-coordinate of the tap
+     * @param y The y-coordinate of the tap
+     */
+    tap(x: number, y: number): Promise<void>;
+
+    /**
+     * Wait until an element appears that has the `property` equal to `value` and then tap on it.
+     *
+     * An error will be thrown if the element can't be found after the timeout.
+     *
+     * Example:
+     *
+     * ```ts
+     * await driver.tapElement('text', 'Skip');
+     * ```
+     *
+     * @param property Name of the property to match on elements
+     * @param value Expected value of the property
+     * @param timeout Maximum time in milliseconds to wait for the element to appear. Default to`5000`.
+     * @param delay Interval in milliseconds between checks for the element. Default to `500`.
+     * @param waitForStability If enabled wait for the element position to stabilize before tapping. Default to`false`.
+     */
     tapElement(
         property: string,
         value: string,
@@ -113,12 +172,51 @@ export type WaldoBrowser = {
         delay?: number,
         waitForStability?: boolean,
     ): Promise<void>;
+
+    /**
+     * Wait until an element appears that matches the predicate in the Waldo tree and then tap on it.
+     *
+     * An error will be thrown if the element can't be found after the retries.
+     *
+     * Example:
+     *
+     * ```ts
+     * await driver.tapElementWith((n) => n.text === 'Skip');
+     * ```
+     *
+     * **Note**: This command is only available when using the Waldo automation via the
+     * `'waldo:automationName': 'Waldo'` capability.
+     *
+     * @param predicate A function that returns `true` for the element to tap on
+     * @param position Index of the element to match if there are multiple matches, or `'first'` or `'last'`. Default to `0`.
+     * @param retries Maximum number of retries to find the element. Default to`3`.
+     * @param delay Interval in milliseconds between retries. Default to`500`.
+     */
     tapElementWith(
         predicate: (n: WaldoTreeElement) => boolean,
         position?: number | 'first' | 'last',
         retries?: number,
         delay?: number,
     ): Promise<void>;
+
+    /**
+     * Wait until an element appears that has the `property` equal to `value` and then type `text` in it.
+     *
+     * An error will be thrown if the element can't be found after the timeout.
+     *
+     * Example:
+     *
+     * ```ts
+     * await driver.typeInElement('placeholder', 'email address', 'test@example.com');
+     * ```
+     *
+     * @param property Name of the property to match on elements
+     * @param value Expected value of the property
+     * @param text The text to type in the element
+     * @param timeout Maximum time in milliseconds to wait for the element to appear. Default to`5000`.
+     * @param delay Interval in milliseconds between checks for the element. Default to`500`.
+     * @param waitForStability If enabled wait for the element position to stabilize before tapping. Default to`false`.
+     */
     typeInElement(
         property: string,
         value: string,
@@ -129,29 +227,25 @@ export type WaldoBrowser = {
     ): Promise<void>;
 
     /**
-     * Simulate a 'tap' gesture at the given coordinates.
-     *
-     * This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerUp`.
-     *
-     * @param x The x-coordinate of the tap
-     * @param y The y-coordinate of the tap
-     */
-    tap(x: number, y: number): Promise<void>;
-    waitForElement(
-        property: string,
-        value: string,
-        timeout?: number,
-        delay?: number,
-        waitForStability?: boolean,
-    ): Promise<AppiumElement>;
-
-    /**
      * Simulate a 'tap' gesture at the center of the given bounding box.
+     *
+     * Example:
+     *
+     * ```ts
+     * const box = await driver.getNodes((n) => n.text === 'Skip')[0];
+     * await driver.tapCenterOfBox(box);
+     * ```
      */
     tapCenterOfBox(box: BoundingBoxLike): Promise<void>;
 
     /**
      * Get all nodes in the Waldo tree that match the given predicate.
+     *
+     * Example:
+     *
+     * ```ts
+     * const nodes = await driver.getNodes((n) => n.text === 'Skip');
+     * ```
      *
      * **Note**: This command is only available when using the Waldo automation via the
      * `'waldo:automationName': 'Waldo'` capability.
@@ -173,6 +267,13 @@ export type WaldoBrowser = {
      *
      * This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerMove`, `pointerUp`.
      *
+     * Example:
+     *
+     * ```ts
+     * // Swipe from top to bottom
+     * await driver.swipeScreen('vertical', 10, 90);
+     * ```
+     *
      * @param direction The direction of the swipe, either `vertical` or `horizontal`. Default to `horizontal`.
      * @param fromScreenPercent The starting point of the swipe as a percentage of the screen size. Default to `95`.
      * @param toScreenPercent The ending point of the swipe as a percentage of the screen size. Default to `5`.
@@ -190,12 +291,25 @@ export type WaldoBrowser = {
      * **Note**: If an absolute path is provided, this function is equivalent to calling `saveScreenshot`
      * directly.
      *
+     * Example:
+     *
+     * ```ts
+     * // Final path will be ./screenshots/screenshot.png
+     * await driver.screenshot('screenshot.png');
+     * ```
+     *
      * @param path The path to save the screenshot to
      */
     screenshot(path: string): Promise<void>;
 
     /**
      * Send a log line that will be visible in the Waldo Session Viewer
+     *
+     * Example:
+     *
+     * ```ts
+     * await driver.log('Found logged in user', { name: detectedUserName }, 'debug');
+     * ```
      *
      * @param message The message to log
      * @param payload Additional data to log that will be visible when the log line is selected

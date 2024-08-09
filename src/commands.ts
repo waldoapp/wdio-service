@@ -34,20 +34,6 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
         }),
     );
 
-    driver.addCommand(
-        'tapElement',
-        async function commandFn(
-            this: WebdriverIO.Browser,
-            property: string,
-            value: string,
-            timeout: number = 5000,
-            delay: number = 500,
-            waitForStability: boolean = false,
-        ) {
-            return tapElement(this, property, value, timeout, delay, waitForStability);
-        },
-    );
-
     // Thin wrapper around saveScreenshot to ensure that the destination directory always exists
     driver.addCommand(
         'screenshot',
