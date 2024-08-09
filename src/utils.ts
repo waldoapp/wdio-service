@@ -1,9 +1,15 @@
 import _ from 'lodash';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import logger from '@wdio/logger';
 
 import { getRemoteBaseUrl, getWdUrl } from './urls.js';
-import type { AppiumElement, BoundingBox, SessionInfo, SwipeDirection } from './types.js';
+import type {
+    AppiumElement,
+    BoundingBox,
+    BoundingBoxLike,
+    SessionInfo,
+    SwipeDirection,
+} from './types.js';
 import type { WaldoTree, WaldoTreeElement } from './tree-types.js';
 import { parseXmlAsWaldoTree } from './tree-parser.js';
 
@@ -52,6 +58,19 @@ export async function waitForSessionReady(driver: WebdriverIO.Browser) {
     log.info('Waldo session is ready');
 }
 
+export function resolveBoundingBox(box: BoundingBoxLike): BoundingBox {
+    if ('top' in box) {
+        return box;
+    } else {
+        return {
+            top: box.y,
+            left: box.x,
+            width: box.width,
+            height: box.height,
+        };
+    }
+}
+
 export async function logEvent(
     driver: WebdriverIO.Browser,
     message: string,
@@ -59,7 +78,21 @@ export async function logEvent(
     level: 'debug' | 'info' | 'warn' | 'error' = 'info',
 ) {
     const url = `${getRemoteBaseUrl(driver)}/wd/hub/session/${driver.sessionId}/timelineEvent`;
-    await axios.post(url, { level, message, payload });
+    try {
+        await axios.post(url, { level, message, payload });
+    } catch (e: unknown) {
+        let errorMessage = 'Failed';
+        if (e instanceof Error) {
+            errorMessage = e.message;
+        }
+        let data: any = undefined;
+        if (e instanceof AxiosError) {
+            data = e.response?.data;
+        }
+
+        // Log the problem locally but don't fail the test
+        log.error(`Failed to log event "${message}": ${errorMessage}`, data);
+    }
 }
 
 export function performTap(driver: WebdriverIO.Browser, x: number, y: number) {

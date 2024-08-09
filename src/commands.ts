@@ -5,7 +5,7 @@ import process from 'process';
 import { command } from 'webdriver';
 import logger from '@wdio/logger';
 
-import { BoundingBox, SwipeDirection } from './types.js';
+import { BoundingBoxLike, SwipeDirection } from './types.js';
 import {
     tapElement,
     tapElementWith,
@@ -17,6 +17,7 @@ import {
     logEvent,
     findInTree,
     getWaldoTree,
+    resolveBoundingBox,
 } from './utils.js';
 import { WaldoTreeElement } from './tree-types.js';
 
@@ -31,20 +32,6 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
             ref: 'http://appium.io/docs/en/commands/device/app/reset-app/',
             parameters: [],
         }),
-    );
-
-    driver.addCommand(
-        'tapElement',
-        async function commandFn(
-            this: WebdriverIO.Browser,
-            property: string,
-            value: string,
-            timeout: number = 5000,
-            delay: number = 500,
-            waitForStability: boolean = false,
-        ) {
-            return tapElement(this, property, value, timeout, delay, waitForStability);
-        },
     );
 
     // Thin wrapper around saveScreenshot to ensure that the destination directory always exists
@@ -134,8 +121,8 @@ export function addDriverCommands(driver: WebdriverIO.Browser) {
 
     driver.addCommand(
         'tapCenterOfBox',
-        async function commandFn(this: WebdriverIO.Browser, box: BoundingBox) {
-            return tapCenterOfBox(this, box);
+        async function commandFn(this: WebdriverIO.Browser, box: BoundingBoxLike) {
+            return tapCenterOfBox(this, resolveBoundingBox(box));
         },
     );
 
