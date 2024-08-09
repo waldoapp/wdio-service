@@ -375,6 +375,26 @@ Default: `undefined`
 In addition to configuring Waldo as a remote WebDriver endpoint this package also adds the following commands on the
 driver object:
 
+### waitForElement
+
+Wait until an element appears that has the `property` equal to `value` and returns it.
+
+An error will be thrown if the element can't be found after the timeout.
+
+Example:
+
+```ts
+const element = await driver.waitForElement('text', 'Hello, World!');
+```
+
+Parameters:
+
+- `property` Name of the property to match on elements
+- `value` Expected value of the property
+- `timeout` Maximum time in milliseconds to wait for the element to appear. Default to `5000`.
+- `delay` Interval in milliseconds between checks for the element. Default to `500`.
+- `waitForStability` If enabled wait for the element position to stabilize before tapping. Default to `false`.
+
 ### tap
 
 Simulate a 'tap' gesture at the given coordinates.
@@ -387,6 +407,65 @@ Example:
 await driver.tap(100, 100);
 ```
 
+### tapElement
+
+Wait until an element appears that has the `property` equal to `value` and then tap on it.
+
+An error will be thrown if the element can't be found after the timeout.
+
+Example:
+
+```ts
+await driver.tapElement('text', 'Skip');
+```
+
+- `property` Name of the property to match on elements
+- `value` Expected value of the property
+- `timeout` Maximum time in milliseconds to wait for the element to appear. Default to`5000`.
+- `delay` Interval in milliseconds between checks for the element. Default to `500`.
+- `waitForStability` If enabled wait for the element position to stabilize before tapping. Default to`false`.
+
+### tapElementWith
+
+Wait until an element appears that matches the predicate in the Waldo tree and then tap on it.
+
+An error will be thrown if the element can't be found after the retries.
+
+Example:
+
+```ts
+await driver.tapElementWith((n) => n.text === 'Skip');
+```
+
+> ℹ️ **Note**
+>
+> This command is only available when using the Waldo automation via the
+> `'waldo:automationName': 'Waldo'` capability.
+
+- `predicate` A function that returns `true` for the element to tap on
+- `position` Index of the element to match if there are multiple matches, or `'first'` or `'last'`. Default to `0`.
+- `retries` Maximum number of retries to find the element. Default to`3`.
+- `delay` Interval in milliseconds between retries. Default to`500`.
+
+### typeInElement
+
+Wait until an element appears that has the `property` equal to `value` and then type `text` in it.
+
+An error will be thrown if the element can't be found after the timeout.
+
+Example:
+
+```ts
+await driver.typeInElement('placeholder', 'email address', 'test@example.com');
+```
+
+- `property` Name of the property to match on elements
+- `value` Expected value of the property
+- `text` The text to type in the element
+- `timeout` Maximum time in milliseconds to wait for the element to appear. Default to`5000`.
+- `delay` Interval in milliseconds between checks for the element. Default to`500`.
+- `waitForStability` If enabled wait for the element position to stabilize before tapping. Default to`false`.
+
 ### tapCenterOfBox
 
 Simulate a 'tap' gesture at the center of the given bounding box.
@@ -394,7 +473,8 @@ Simulate a 'tap' gesture at the center of the given bounding box.
 Example:
 
 ```ts
-await driver.tap({ left: 100, y: 100, width: 200, height: 200 });
+const box = await driver.getNodes((n) => n.text === 'Skip')[0];
+await driver.tapCenterOfBox(box);
 ```
 
 ### getNodes
@@ -432,17 +512,18 @@ The default movement without any options is a horizontal swipe from right (`95`)
 
 This is equivalent to the following actions: `pointerMove`, `pointerDown`, `pause`, `pointerMove`, `pointerUp`.
 
+Example:
+
+```ts
+// Swipe from top to bottom
+await driver.swipeScreen('vertical', 10, 90);
+```
+
 Parameters:
 
 - `direction`: The direction of the swipe, either `vertical` or `horizontal`. Default to `horizontal`.
 - `fromScreenPercent`: The starting point of the swipe as a percentage of the screen size. Default to `95`.
 - `toScreenPercent`: The ending point of the swipe as a percentage of the screen size. Default to `5`.
-
-Example:
-
-```ts
-await driver.swipeScreen('vertical', 90, 10);
-```
 
 ### screenshot
 
@@ -457,19 +538,22 @@ A simplified wrapper around the `saveScreenshot` command that saves the screensh
 Example:
 
 ```ts
-await driver.screenshot('my-screenshot.png');
+// Final path will be ./screenshots/screenshot.png
+await driver.screenshot('screenshot.png');
 ```
 
 ### log
 
 Send a log line that will be visible in the Waldo Session Viewer
 
-- `message`: The message to log
-- `payload`: Additional data to log that will be visible when the log line is selected. Default to `{}`.
-- `level`: The log level, one of `debug`, `info`, `warn`, or `error`. Default to `info`.
-
 Example:
 
 ```ts
 await driver.log('Found logged in user', { name: detectedUserName }, 'debug');
 ```
+
+Parameters:
+
+- `message`: The message to log
+- `payload`: Additional data to log that will be visible when the log line is selected. Default to `{}`.
+- `level`: The log level, one of `debug`, `info`, `warn`, or `error`. Default to `info`.

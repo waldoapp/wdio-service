@@ -244,7 +244,10 @@ export type WaldoBrowser = {
      * Example:
      *
      * ```ts
-     * const nodes = await driver.getNodes((n) => n.text === 'Skip');
+     * const okButtons = await driver.getNodes(
+     *   // Find all nodes with a text that contains 'ok' case insensitive
+     *   (n) => n.text && n.text.match(/ok/i) !== null,
+     * );
      * ```
      *
      * **Note**: This command is only available when using the Waldo automation via the
