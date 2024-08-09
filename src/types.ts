@@ -102,6 +102,8 @@ export type WaldoServiceOptions = WaldoSharedOptions & {
 
 export type BoundingBox = { width: number; height: number; top: number; left: number };
 
+export type BoundingBoxLike = BoundingBox | Pick<WaldoTreeElement, 'x' | 'y' | 'width' | 'height'>;
+
 export type WaldoBrowser = {
     resetApp(): Promise<void>;
     tapElement(
@@ -146,7 +148,7 @@ export type WaldoBrowser = {
     /**
      * Simulate a 'tap' gesture at the center of the given bounding box.
      */
-    tapCenterOfBox(box: BoundingBox): Promise<void>;
+    tapCenterOfBox(box: BoundingBoxLike): Promise<void>;
 
     /**
      * Get all nodes in the Waldo tree that match the given predicate.

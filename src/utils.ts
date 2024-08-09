@@ -3,7 +3,13 @@ import axios, { AxiosError } from 'axios';
 import logger from '@wdio/logger';
 
 import { getRemoteBaseUrl, getWdUrl } from './urls.js';
-import type { AppiumElement, BoundingBox, SessionInfo, SwipeDirection } from './types.js';
+import type {
+    AppiumElement,
+    BoundingBox,
+    BoundingBoxLike,
+    SessionInfo,
+    SwipeDirection,
+} from './types.js';
 import type { WaldoTree, WaldoTreeElement } from './tree-types.js';
 import { parseXmlAsWaldoTree } from './tree-parser.js';
 
@@ -50,6 +56,19 @@ export async function waitForSessionReady(driver: WebdriverIO.Browser) {
         throw new Error(`Session is in bad state ${sessionInfo.status}`);
     }
     log.info('Waldo session is ready');
+}
+
+export function resolveBoundingBox(box: BoundingBoxLike): BoundingBox {
+    if ('top' in box) {
+        return box;
+    } else {
+        return {
+            top: box.y,
+            left: box.x,
+            width: box.width,
+            height: box.height,
+        };
+    }
 }
 
 export async function logEvent(
