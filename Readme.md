@@ -465,7 +465,7 @@ await driver.screenshot('my-screenshot.png');
 Send a log line that will be visible in the Waldo Session Viewer
 
 - `message`: The message to log
-- `payload`: Additional data to log that will be visible when the log line is selected
+- `payload`: Additional data to log that will be visible when the log line is selected. Default to `{}`.
 - `level`: The log level, one of `debug`, `info`, `warn`, or `error`. Default to `info`.
 
 Example:
