@@ -284,11 +284,13 @@ export async function waitForElement(
                 const newLocation = await driver.getElementLocation(element[ELEMENT_KEY]);
                 stable = _.isEqual(newLocation, location);
                 location = newLocation;
-            } else {
-                throw new Error(
-                    `Element with "${property}"='${value}' was removed while checking for stability`,
-                );
             }
+        }
+
+        if (!element) {
+            throw new Error(
+                `Element with "${property}"='${value}' was removed while checking for stability`,
+            );
         }
     }
     await logEvent(driver, `Found element "${property}"='${value}'`, logPayload, 'debug');
