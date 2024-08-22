@@ -238,7 +238,7 @@ export async function waitForElement(
     let element = await tryFindElement(driver, property, value);
     if (!element) {
         try {
-            const remaining = resolvedTimeout - (Date.now() - start);
+            const remaining = resolvedTimeout === 0 ? 0 : resolvedTimeout - (Date.now() - start);
             await driver.waitUntil(
                 async () => {
                     element = await tryFindElement(driver, property, value);
@@ -270,7 +270,7 @@ export async function waitForElement(
         let stable = false;
         let location = {};
         while (!stable) {
-            if (Date.now() - start > resolvedTimeout) {
+            if (resolvedTimeout !== 0 && Date.now() - start > resolvedTimeout) {
                 await logEvent(
                     driver,
                     `Element with "${property}"='${value}' was still not stable`,
