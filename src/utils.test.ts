@@ -13,6 +13,16 @@ afterEach(() => {
     vi.useRealTimers();
 });
 
+const noSuchElementErrorObject = Object.freeze({
+    error: 'no such element',
+    message: 'An element could not be located on the page using the given search parameters.',
+    stacktrace: '',
+});
+
+/**
+ * Return a browser instance.
+ * This is useful to take methods from it and use them as-is or modified on mocks.
+ */
 async function getSomeBrowserInstance() {
     const browser = await attach({
         options: { capabilities: {} },
@@ -62,9 +72,29 @@ describe('waitForElement', () => {
         expect(found['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
     });
 
-    it('fails when the element is not present', async () => {
+    it("fails when the element is not present (And the 'no such element' error is unhandled)", async () => {
         const browser = await getFakeBrowser();
-        browser.findElement = vi.fn(() => Promise.reject(new Error('Not found')));
+        const noSuchElementError = new Error('Not found');
+        noSuchElementError.name = 'no such element';
+        browser.findElement = vi.fn(() => Promise.reject(noSuchElementError));
+        let resolved = false;
+        const foundPromise = waitForElement(browser, 'selector', 'value')
+            .catch((e) => e)
+            .finally(() => {
+                resolved = true;
+            });
+        await vi.advanceTimersByTimeAsync(4999);
+        expect(resolved).toEqual(false);
+        await vi.advanceTimersByTimeAsync(1);
+        expect(resolved).toEqual(true);
+        const found = await foundPromise;
+        expect(found).toBeInstanceOf(Error);
+        expect(found.message).toMatch(/Could not find element with "selector"='value'/);
+    });
+
+    it("fails when the element is not present (And the 'no such element' error is handled)", async () => {
+        const browser = await getFakeBrowser();
+        browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
         let resolved = false;
         const foundPromise = waitForElement(browser, 'selector', 'value')
             .catch((e) => e)
@@ -82,7 +112,7 @@ describe('waitForElement', () => {
 
     it('works when the element is present after a delay', async () => {
         const browser = await getFakeBrowser();
-        browser.findElement = vi.fn(() => Promise.reject(new Error('Not found')));
+        browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
         let resolved = false;
         const foundPromise = waitForElement(browser, 'selector', 'value').finally(() => {
             resolved = true;

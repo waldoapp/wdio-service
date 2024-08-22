@@ -188,9 +188,30 @@ async function tryFindElement(
 ): Promise<ElementReference | null> {
     try {
         const element = await driver.findElement(using, value);
+
+        // In case of 'no such element' errors, webdriver returns the error object
+        // (That should have no 'ELEMENT' key)
+        if (!(ELEMENT_KEY in element)) {
+            return null;
+        }
+
         return element;
-    } catch {
-        return null;
+    } catch (e) {
+        if (!isNodeError(e)) {
+            throw e;
+        }
+
+        // We shouldn't end there as webdriver tries to treat 'no such element' errors as non-errors
+        // But detection is based on heuristics (matching the specific error message text) when a remote endpoint
+        // returns the legacy jsonwire 'status' field.
+        //
+        // Waldo returns both 'status' from jsonwire and the W3C 'error' field inside value, being careful to return an
+        // Appium compatible error message, but better safe than sorry.
+        if (e.name === 'no such element') {
+            return null;
+        }
+
+        throw e;
     }
 }
 
