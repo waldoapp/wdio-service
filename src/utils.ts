@@ -12,6 +12,8 @@ import type {
 } from './types.js';
 import type { WaldoTree, WaldoTreeElement } from './tree-types.js';
 import { parseXmlAsWaldoTree } from './tree-parser.js';
+import { ElementReference } from '@wdio/protocols';
+import { ELEMENT_KEY } from 'webdriver';
 
 const log = logger('@waldoapp/wdio-service');
 
@@ -179,69 +181,96 @@ export async function tapCenterOfBox(driver: WebdriverIO.Browser, box: BoundingB
     await performTap(driver, x, y);
 }
 
+async function tryFindElement(
+    driver: WebdriverIO.Browser,
+    using: string,
+    value: string,
+): Promise<ElementReference | null> {
+    try {
+        const element = await driver.findElement(using, value);
+        return element;
+    } catch {
+        return null;
+    }
+}
+
 export async function waitForElement(
     driver: WebdriverIO.Browser,
     property: string,
     value: string,
-    timeout: number = 5000,
-    delay: number = 500,
+    timeout?: number,
+    delay?: number,
     waitForStability: boolean = false,
-): Promise<AppiumElement> {
+): Promise<ElementReference> {
+    const resolvedTimeout = timeout ?? driver.options.waitforTimeout ?? 5000;
+    const resolvedDelay = delay ?? driver.options.waitforInterval ?? 500;
+
+    const logPayload = { timeout: resolvedTimeout, delay: resolvedDelay, property, value };
+
     await logEvent(
         driver,
         `Waiting for element with "${property}"='${value}' to show up`,
-        { timeout, delay, property, value },
+        logPayload,
         'debug',
     );
     const start = Date.now();
-    let element = (await driver.findElement(property, value)) as AppiumElement;
-    if (!element.ELEMENT) {
+    let element = await tryFindElement(driver, property, value);
+    if (!element) {
         try {
+            const remaining = resolvedTimeout - (Date.now() - start);
             await driver.waitUntil(
                 async () => {
-                    element = (await driver.findElement(property, value)) as AppiumElement;
-                    return !!element.ELEMENT;
+                    element = await tryFindElement(driver, property, value);
+                    return element !== null;
                 },
-                { timeout, interval: delay },
+                { timeout: remaining, interval: resolvedDelay },
             );
         } catch (e) {
             await logEvent(
                 driver,
                 `Could not find element with "${property}"='${value}'`,
-                { timeout, delay, property, value },
+                logPayload,
                 'error',
             );
-            throw e;
+            let message = `Could not find element with "${property}"='${value}'`;
+            if (e instanceof Error) {
+                message += `: ${e.message}`;
+            }
+            throw new Error(message, { cause: e });
         }
     }
+
+    if (!element) {
+        throw new Error(`Can't find element with "${property}"='${value}'`);
+    }
+
     // This will wait for an element to have a stable position for some time before returning.
     if (waitForStability) {
         let stable = false;
         let location = {};
         while (!stable) {
-            if (Date.now() - start > timeout) {
+            if (Date.now() - start > resolvedTimeout) {
                 await logEvent(
                     driver,
                     `Element with "${property}"='${value}' was still not stable`,
-                    { timeout, delay, property, value },
+                    logPayload,
                     'error',
                 );
-                throw new Error(`Element still not stable after ${timeout}ms`);
+                throw new Error(`Element still not stable after ${resolvedTimeout}ms`);
             }
-            element = (await driver.findElement(property, value)) as AppiumElement;
-            if (element?.ELEMENT) {
-                const newLocation = await driver.getElementLocation(element.ELEMENT);
+            element = await tryFindElement(driver, property, value);
+            if (element) {
+                const newLocation = await driver.getElementLocation(element[ELEMENT_KEY]);
                 stable = _.isEqual(newLocation, location);
                 location = newLocation;
+            } else {
+                throw new Error(
+                    `Element with "${property}"='${value}' was removed while checking for stability`,
+                );
             }
         }
     }
-    await logEvent(
-        driver,
-        `Found element "${property}"='${value}'`,
-        { timeout, delay, property, value },
-        'debug',
-    );
+    await logEvent(driver, `Found element "${property}"='${value}'`, logPayload, 'debug');
     return element;
 }
 
@@ -315,7 +344,7 @@ export async function tapElement(
     waitForStability: boolean = false,
 ) {
     const element = await waitForElement(driver, property, value, timeout, delay, waitForStability);
-    await driver.elementClick(element.ELEMENT);
+    await driver.elementClick(element[ELEMENT_KEY]);
 }
 
 /**
@@ -365,8 +394,8 @@ export async function typeInElement(
     waitForStability: boolean = false,
 ) {
     const element = await waitForElement(driver, property, value, timeout, delay, waitForStability);
-    await driver.elementClick(element.ELEMENT);
-    await driver.setValueImmediate(element.ELEMENT, text);
+    await driver.elementClick(element[ELEMENT_KEY]);
+    await driver.setValueImmediate(element[ELEMENT_KEY], text);
 }
 
 export function isNodeError(error: any): error is NodeJS.ErrnoException {
