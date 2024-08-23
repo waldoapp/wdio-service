@@ -26,7 +26,7 @@ const noSuchElementErrorObject = Object.freeze({
  */
 async function getSomeBrowserInstance() {
     const browser = await attach({
-        options: { capabilities: {} },
+        options: {},
         sessionId: '123456',
         protocol: 'http',
         hostname: 'localhost',
@@ -57,7 +57,6 @@ async function getFakeBrowser(): Promise<WebdriverIO.Browser> {
             protocol: 'http',
             hostname: 'localhost',
             port: 12345,
-            capabilities: {},
             waitforTimeout: 5000,
             waitforInterval: 500,
         },
@@ -153,7 +152,9 @@ describe('performSwipe', () => {
 describe('swipeScreen', () => {
     it('works for horizontal defaults', async () => {
         const browser = await getFakeBrowser();
-        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.getWindowRect = vi.fn(() =>
+            Promise.resolve({ x: 0, y: 0, width: 920, height: 1080 }),
+        );
         browser.performActions = vi.fn(() => Promise.resolve());
         await swipeScreen(browser, 'horizontal');
         expect(browser.performActions).toHaveBeenCalledTimes(1);
@@ -175,7 +176,9 @@ describe('swipeScreen', () => {
 
     it('works for horizontal custom', async () => {
         const browser = await getFakeBrowser();
-        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.getWindowRect = vi.fn(() =>
+            Promise.resolve({ x: 0, y: 0, width: 920, height: 1080 }),
+        );
         browser.performActions = vi.fn(() => Promise.resolve());
         await swipeScreen(browser, 'horizontal', 10, 50);
         expect(browser.performActions).toHaveBeenCalledTimes(1);
@@ -197,7 +200,9 @@ describe('swipeScreen', () => {
 
     it('works for vertical defaults', async () => {
         const browser = await getFakeBrowser();
-        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.getWindowRect = vi.fn(() =>
+            Promise.resolve({ x: 0, y: 0, width: 920, height: 1080 }),
+        );
         browser.performActions = vi.fn(() => Promise.resolve());
         await swipeScreen(browser, 'vertical');
         expect(browser.performActions).toHaveBeenCalledTimes(1);
@@ -219,7 +224,9 @@ describe('swipeScreen', () => {
 
     it('works for vertical custom', async () => {
         const browser = await getFakeBrowser();
-        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.getWindowRect = vi.fn(() =>
+            Promise.resolve({ x: 0, y: 0, width: 920, height: 1080 }),
+        );
         browser.performActions = vi.fn(() => Promise.resolve());
         await swipeScreen(browser, 'vertical', 15, 55);
         expect(browser.performActions).toHaveBeenCalledTimes(1);

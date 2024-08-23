@@ -157,23 +157,24 @@ export async function swipeScreen(
     ) {
         throw new Error('fromScreenPercent and toScreenPercent should be between 0 and 100');
     }
-    const screen = await driver._getWindowSize();
+    const screen = await driver.getWindowRect();
     const swipeDirection = { fromX: 0, fromY: 0, toX: 0, toY: 0 };
-    const middleX = Math.round(screen.width / 2);
-    const middleY = Math.round(screen.height / 2);
+    const middleX = Math.round(screen.x + screen.width / 2);
+    const middleY = Math.round(screen.y + screen.height / 2);
 
     switch (direction) {
         case 'vertical':
             swipeDirection.fromX = middleX;
             swipeDirection.toX = middleX;
-            swipeDirection.fromY = Math.round(screen.height * (fromScreenPercent / 100));
-            swipeDirection.toY = Math.round(screen.height * (toScreenPercent / 100));
+            swipeDirection.fromY = Math.round(screen.y + screen.height * (fromScreenPercent / 100));
+            swipeDirection.toY = Math.round(screen.y + screen.height * (toScreenPercent / 100));
             break;
+
         case 'horizontal':
+            swipeDirection.fromX = Math.round(screen.x + screen.width * (fromScreenPercent / 100));
+            swipeDirection.toX = Math.round(screen.x + screen.width * (toScreenPercent / 100));
             swipeDirection.fromY = middleY;
             swipeDirection.toY = middleY;
-            swipeDirection.fromX = Math.round(screen.width * (fromScreenPercent / 100));
-            swipeDirection.toX = Math.round(screen.width * (toScreenPercent / 100));
             break;
     }
 

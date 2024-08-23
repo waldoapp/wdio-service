@@ -24,15 +24,15 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
 
     async onPrepare(
         config: Options.Testrunner,
-        capabilities: Capabilities.RemoteCapabilities,
-    ): Promise<void> {
+        capabilities: Capabilities.TestrunnerCapabilities,
+    ): Promise {
         this.waldoProfile = await loadWaldoProfile();
         this.configureRemoteInAllCapabilities(config, capabilities);
     }
 
     private configureRemoteInAllCapabilities(
         config: Options.Testrunner,
-        capabilities: Capabilities.RemoteCapabilities,
+        capabilities: Capabilities.TestrunnerCapabilities,
     ) {
         if (Array.isArray(capabilities)) {
             for (const cap of capabilities) {
