@@ -26,6 +26,8 @@ const noSuchElementErrorObject = Object.freeze({
  */
 async function getSomeBrowserInstance() {
     const browser = await attach({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore the types are different in WebDriverIO v8 and v9 but that doesn't matter here
         options: {},
         sessionId: '123456',
         protocol: 'http',
@@ -53,6 +55,8 @@ describe('waitAsPromise', () => {
 async function getFakeBrowser(): Promise<WebdriverIO.Browser> {
     const someBrowser = await getSomeBrowserInstance();
     return {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore the types are different in WebDriverIO v8 and v9 but that doesn't matter here
         options: {
             protocol: 'http',
             hostname: 'localhost',
