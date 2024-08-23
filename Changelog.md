@@ -1,3 +1,19 @@
+## Version 0.2.3
+
+- Fix `waitForElement` to handle more `findElement` return values
+- Remove dependency on `lodash`
+
+## Version 0.2.2
+
+- Include more documentation in the readme
+
+## Version 0.2.1
+
+- Depend on `sax` at `^1.0.0` instead of `^1.4.1`
+- Fix error when importing `sax` at runtime
+- Add types to commands returning waldo tree elements
+- Move `webdriverio` to a peerDependency
+
 ## Version 0.2.0
 
 - Add `waldo:automationName` to capabilities and document it's usage.
