@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import axios, { AxiosError } from 'axios';
 import logger from '@wdio/logger';
 
@@ -12,10 +11,18 @@ import type {
 } from './types.js';
 import type { WaldoTree, WaldoTreeElement } from './tree-types.js';
 import { parseXmlAsWaldoTree } from './tree-parser.js';
-import { ElementReference } from '@wdio/protocols';
+import type { ElementReference, RectReturn } from '@wdio/protocols';
 import { ELEMENT_KEY } from 'webdriver';
 
 const log = logger('@waldoapp/wdio-service');
+
+export function last<T>(arr: readonly T[]): T | undefined {
+    return arr.length > 0 ? arr[arr.length - 1] : undefined;
+}
+
+export function first<T>(arr: readonly T[]): T | undefined {
+    return arr.length > 0 ? arr[0] : undefined;
+}
 
 export async function waitAsPromise(timeMillis: number) {
     await new Promise<void>((resolve): void => {
@@ -268,7 +275,7 @@ export async function waitForElement(
     // This will wait for an element to have a stable position for some time before returning.
     if (waitForStability) {
         let stable = false;
-        let location = {};
+        let location: RectReturn | undefined;
         while (!stable) {
             if (resolvedTimeout !== 0 && Date.now() - start > resolvedTimeout) {
                 await logEvent(
@@ -281,9 +288,13 @@ export async function waitForElement(
             }
             element = await tryFindElement(driver, property, value);
             if (element) {
-                (await driver.$(element)).getLocation();
                 const newLocation = await driver.getElementRect(element[ELEMENT_KEY]);
-                stable = _.isEqual(newLocation, location);
+                stable =
+                    location !== undefined &&
+                    newLocation.x === location.x &&
+                    newLocation.y === location.y &&
+                    newLocation.width === location.width &&
+                    newLocation.height === location.height;
                 location = newLocation;
             }
         }
@@ -384,11 +395,11 @@ export async function tapElementWith(
     for (let i = 0; i < retries; i += 1) {
         const nodes = await findInTree(driver, predicate);
         if (nodes.length > 0) {
-            let node;
+            let node: WaldoTreeElement | undefined;
             if (position === 'last') {
-                node = _.last(nodes);
+                node = last(nodes);
             } else if (position === 'first') {
-                node = _.first(nodes);
+                node = first(nodes);
             } else if (nodes.length > position) {
                 node = nodes[position];
             }

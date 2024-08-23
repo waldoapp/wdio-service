@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest';
-import { waitAsPromise, waitForElement } from './utils.js';
+import { first, last, waitAsPromise, waitForElement } from './utils.js';
 import { attach } from 'webdriverio';
 import { ELEMENT_KEY } from 'webdriver';
 
@@ -123,5 +123,23 @@ describe('waitForElement', () => {
         expect(resolved).toEqual(true);
         const found = await foundPromise;
         expect(found['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
+    });
+});
+
+describe('first', () => {
+    it('handle empty array', () => {
+        expect(first([])).toEqual(undefined);
+    });
+    it('return the first element', () => {
+        expect(first([1, 2, 3])).toEqual(1);
+    });
+});
+
+describe('last', () => {
+    it('handle empty array', () => {
+        expect(last([])).toEqual(undefined);
+    });
+    it('return the last element', () => {
+        expect(last([1, 2, 3])).toEqual(3);
     });
 });
