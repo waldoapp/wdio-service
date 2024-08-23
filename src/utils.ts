@@ -281,7 +281,8 @@ export async function waitForElement(
             }
             element = await tryFindElement(driver, property, value);
             if (element) {
-                const newLocation = await driver.getElementLocation(element[ELEMENT_KEY]);
+                (await driver.$(element)).getLocation();
+                const newLocation = await driver.getElementRect(element[ELEMENT_KEY]);
                 stable = _.isEqual(newLocation, location);
                 location = newLocation;
             }
