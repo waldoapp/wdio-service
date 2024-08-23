@@ -1,3 +1,7 @@
+## Version 0.2.4
+
+- Fix horizontal swipe coordinate calculation in `swipeScreen`
+
 ## Version 0.2.3
 
 - Fix `waitForElement` to handle more `findElement` return values
