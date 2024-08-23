@@ -7,19 +7,16 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  check-source:
+    name: Check Source
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22.x
       - name: Install packages
         run: npm ci
       - name: Build
@@ -31,9 +28,34 @@ jobs:
       - name: Upload artifact (Package)
         uses: actions/upload-artifact@v4
         with:
-          name: package-node-${{ matrix.node-version }}
+          name: package
           path: '*.tgz'
       - name: prettier
         run: npm run prettier:check
       - name: eslint
         run: npm run eslint:check
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        wdio-version: ['^8.0.0', '^9.0.0']
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Force wdio version ${{ matrix.wdio-version }}
+        run: |
+          sed -i -e 's/"^8.0.0 || ^9.0.0"/"${{ matrix.wdio-version }}"/g' package.json
+      - name: Install packages
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm test
