@@ -1,4 +1,4 @@
-import type { Capabilities } from '@wdio/types';
+import type { Capabilities, Services } from '@wdio/types';
 import type { ElementReference } from '@wdio/protocols';
 import { WaldoTree, WaldoTreeElement } from './tree-types.js';
 
@@ -79,6 +79,14 @@ export type WaldoCapabilities = {
     'waldo:options'?: WaldoCapabilityOptions;
 };
 
+/**
+ * The type for capabilities that the test runner can use.
+ *
+ * Exposed as `Capabilities.TestrunnerCapabilities` in WebDriverIO v9 and
+ * `Capabilities.RemoteCapability` in v8
+ */
+export type TestrunnerCapabilities = Parameters<Required<Services.ServiceInstance>['onPrepare']>[1];
+
 export type CapabilitiesWithWaldo = WebdriverIO.Capabilities & WaldoCapabilities;
 
 export type WaldoRemoteCapability = {
@@ -89,7 +97,7 @@ export type WaldoRemoteCapability = {
     streamUrl?: string;
 };
 
-export type RemoteCapabilityWithWaldo = Capabilities.TestrunnerCapabilities & WaldoRemoteCapability;
+export type RemoteCapabilityWithWaldo = TestrunnerCapabilities & WaldoRemoteCapability;
 
 export type WaldoServiceOptions = WaldoSharedOptions & {
     /**

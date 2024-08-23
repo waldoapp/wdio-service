@@ -1,7 +1,11 @@
-import type { Services, Capabilities, Options } from '@wdio/types';
+import type { Services, Options } from '@wdio/types';
 
 import { getEnvironmentConnectionOptions } from './configuration/waldoEnvironment.js';
-import type { WaldoServiceOptions, CapabilitiesWithWaldo } from './types.js';
+import type {
+    WaldoServiceOptions,
+    CapabilitiesWithWaldo,
+    TestrunnerCapabilities,
+} from './types.js';
 
 import logger from '@wdio/logger';
 import {
@@ -22,17 +26,14 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
         this.processEnvConfig = getProcessEnvironmentConfiguration();
     }
 
-    async onPrepare(
-        config: Options.Testrunner,
-        capabilities: Capabilities.TestrunnerCapabilities,
-    ): Promise {
+    async onPrepare(config: Options.Testrunner, capabilities: TestrunnerCapabilities): Promise {
         this.waldoProfile = await loadWaldoProfile();
         this.configureRemoteInAllCapabilities(config, capabilities);
     }
 
     private configureRemoteInAllCapabilities(
         config: Options.Testrunner,
-        capabilities: Capabilities.TestrunnerCapabilities,
+        capabilities: TestrunnerCapabilities,
     ) {
         if (Array.isArray(capabilities)) {
             for (const cap of capabilities) {
