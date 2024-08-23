@@ -1,4 +1,4 @@
-import type { Capabilities, Services } from '@wdio/types';
+import type { Services } from '@wdio/types';
 import type { ElementReference } from '@wdio/protocols';
 import { WaldoTree, WaldoTreeElement } from './tree-types.js';
 
