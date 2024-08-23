@@ -89,7 +89,7 @@ export type WaldoRemoteCapability = {
     streamUrl?: string;
 };
 
-export type RemoteCapabilityWithWaldo = Capabilities.RemoteCapability & WaldoRemoteCapability;
+export type RemoteCapabilityWithWaldo = Capabilities.TestrunnerCapabilities & WaldoRemoteCapability;
 
 export type WaldoServiceOptions = WaldoSharedOptions & {
     /**

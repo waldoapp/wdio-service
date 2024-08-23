@@ -37,24 +37,24 @@
     "author": "developers@waldo.com",
     "license": "MIT",
     "dependencies": {
-        "@wdio/logger": "^8.0.0",
+        "@wdio/logger": "^8.0.0 || ^9.0.0",
         "axios": "^1.0.0",
         "open": "^8.0.0",
         "sax": "^1.0.0",
-        "webdriver": "^8.0.0",
+        "webdriver": "^8.0.0 || ^9.0.0",
         "yaml": "^2.0.0"
     },
     "peerDependencies": {
-        "webdriverio": "^8.0"
+        "webdriverio": "^8.0.0 || ^9.0.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.6.0",
         "@types/node": "^18.0.0",
         "@types/sax": "^1.2.7",
-        "@wdio/globals": "^8.0.0",
-        "@wdio/protocols": "^8.0.0",
-        "@wdio/types": "^8.0.0",
-        "eslint": "^9.9.1",
+        "@wdio/globals": "^8.0.0 || ^9.0.0",
+        "@wdio/protocols": "^8.0.0 || ^9.0.0",
+        "@wdio/types": "^8.0.0 || ^9.0.0",
+        "eslint": "^9.6.0",
         "eslint-config-prettier": "^9.1.0",
         "memfs": "^4.11.1",
         "prettier": "^3.3.3",
