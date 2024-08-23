@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest';
-import { first, last, waitAsPromise, waitForElement } from './utils.js';
+import { first, last, performSwipe, swipeScreen, waitAsPromise, waitForElement } from './utils.js';
 import { attach } from 'webdriverio';
 import { ELEMENT_KEY } from 'webdriver';
 
@@ -123,6 +123,119 @@ describe('waitForElement', () => {
         expect(resolved).toEqual(true);
         const found = await foundPromise;
         expect(found['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
+    });
+});
+
+describe('performSwipe', () => {
+    it('call performActions with the expected values', async () => {
+        const browser = await getFakeBrowser();
+        browser.performActions = vi.fn(() => Promise.resolve());
+        await performSwipe(browser, 10, 10, 20, 10);
+        expect(browser.performActions).toHaveBeenCalledTimes(1);
+        expect(browser.performActions).toHaveBeenCalledWith([
+            {
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', x: 10, y: 10, duration: 50 },
+                    { type: 'pointerDown' },
+                    { type: 'pause', duration: 600 },
+                    { type: 'pointerMove', x: 20, y: 10, duration: 50 },
+                    { type: 'pointerUp' },
+                ],
+            },
+        ]);
+    });
+});
+
+describe('swipeScreen', () => {
+    it('works for horizontal defaults', async () => {
+        const browser = await getFakeBrowser();
+        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.performActions = vi.fn(() => Promise.resolve());
+        await swipeScreen(browser, 'horizontal');
+        expect(browser.performActions).toHaveBeenCalledTimes(1);
+        expect(browser.performActions).toHaveBeenCalledWith([
+            {
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', x: 920 * 0.95, y: 1080 / 2, duration: 50 },
+                    { type: 'pointerDown' },
+                    { type: 'pause', duration: 600 },
+                    { type: 'pointerMove', x: 920 * 0.05, y: 1080 / 2, duration: 50 },
+                    { type: 'pointerUp' },
+                ],
+            },
+        ]);
+    });
+
+    it('works for horizontal custom', async () => {
+        const browser = await getFakeBrowser();
+        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.performActions = vi.fn(() => Promise.resolve());
+        await swipeScreen(browser, 'horizontal', 10, 50);
+        expect(browser.performActions).toHaveBeenCalledTimes(1);
+        expect(browser.performActions).toHaveBeenCalledWith([
+            {
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', x: 920 * 0.1, y: 1080 / 2, duration: 50 },
+                    { type: 'pointerDown' },
+                    { type: 'pause', duration: 600 },
+                    { type: 'pointerMove', x: 920 * 0.5, y: 1080 / 2, duration: 50 },
+                    { type: 'pointerUp' },
+                ],
+            },
+        ]);
+    });
+
+    it('works for vertical defaults', async () => {
+        const browser = await getFakeBrowser();
+        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.performActions = vi.fn(() => Promise.resolve());
+        await swipeScreen(browser, 'vertical');
+        expect(browser.performActions).toHaveBeenCalledTimes(1);
+        expect(browser.performActions).toHaveBeenCalledWith([
+            {
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', x: 920 / 2, y: 1080 * 0.95, duration: 50 },
+                    { type: 'pointerDown' },
+                    { type: 'pause', duration: 600 },
+                    { type: 'pointerMove', x: 920 / 2, y: 1080 * 0.05, duration: 50 },
+                    { type: 'pointerUp' },
+                ],
+            },
+        ]);
+    });
+
+    it('works for vertical custom', async () => {
+        const browser = await getFakeBrowser();
+        browser._getWindowSize = vi.fn(() => Promise.resolve({ width: 920, height: 1080 }));
+        browser.performActions = vi.fn(() => Promise.resolve());
+        await swipeScreen(browser, 'vertical', 15, 55);
+        expect(browser.performActions).toHaveBeenCalledTimes(1);
+        expect(browser.performActions).toHaveBeenCalledWith([
+            {
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', x: 920 / 2, y: 1080 * 0.15, duration: 50 },
+                    { type: 'pointerDown' },
+                    { type: 'pause', duration: 600 },
+                    { type: 'pointerMove', x: 920 / 2, y: 1080 * 0.55, duration: 50 },
+                    { type: 'pointerUp' },
+                ],
+            },
+        ]);
     });
 });
 

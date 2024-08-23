@@ -161,18 +161,22 @@ export async function swipeScreen(
     const swipeDirection = { fromX: 0, fromY: 0, toX: 0, toY: 0 };
     const middleX = Math.round(screen.width / 2);
     const middleY = Math.round(screen.height / 2);
-    if (direction === 'vertical') {
-        swipeDirection.fromX = middleX;
-        swipeDirection.toX = middleX;
-        swipeDirection.fromY = Math.round(screen.height * (fromScreenPercent / 100));
-        swipeDirection.toY = Math.round(screen.height * (toScreenPercent / 100));
+
+    switch (direction) {
+        case 'vertical':
+            swipeDirection.fromX = middleX;
+            swipeDirection.toX = middleX;
+            swipeDirection.fromY = Math.round(screen.height * (fromScreenPercent / 100));
+            swipeDirection.toY = Math.round(screen.height * (toScreenPercent / 100));
+            break;
+        case 'horizontal':
+            swipeDirection.fromY = middleY;
+            swipeDirection.toY = middleY;
+            swipeDirection.fromX = Math.round(screen.width * (fromScreenPercent / 100));
+            swipeDirection.toX = Math.round(screen.width * (toScreenPercent / 100));
+            break;
     }
-    if (direction === 'horizontal') {
-        swipeDirection.fromY = middleY;
-        swipeDirection.toY = middleY;
-        swipeDirection.fromX = Math.round(screen.height * (fromScreenPercent / 100));
-        swipeDirection.toX = Math.round(screen.height * (toScreenPercent / 100));
-    }
+
     await performSwipe(
         driver,
         swipeDirection.fromX,
