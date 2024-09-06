@@ -107,7 +107,7 @@ describe('getProcessEnvironmentConfiguration', () => {
         ['0', false],
     ])('read WALDO_SHOW_SESSION and ignore SHOW_SESSION %o -> %o', (value, expected) => {
         vi.stubEnv('SHOW_SESSION', 'true');
-        vi.stubEnv('WALDO_SHOW_SESSION', value as string);
+        vi.stubEnv('WALDO_SHOW_SESSION', value);
         const conf = getProcessEnvironmentConfiguration();
         expect(conf.showSession).toEqual(expected);
     });

@@ -13,7 +13,7 @@ export default [
     ignores: ['**/dist/', 'eslint.config.mjs'],
   },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
   eslintConfigPrettier,
   {
     languageOptions: {

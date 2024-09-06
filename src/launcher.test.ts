@@ -6,7 +6,7 @@ import { WaldoWdioLauncherService } from './launcher.js';
 import { PRODUCTION_CONNECTION, STAGING_CONNECTION } from './configuration/waldoEnvironment.js';
 import { writeTestProfile } from './__tests__/waldoProfileUtils.js';
 
-vi.mock('node:fs', async () => {
+vi.mock('node:fs', () => {
     return memfs.fs;
 });
 
