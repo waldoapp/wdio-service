@@ -1,44 +1,48 @@
 import type { Services, Capabilities, Options } from '@wdio/types';
 
 import { getEnvironmentConnectionOptions } from './configuration/waldoEnvironment.js';
-import { type Configuration, loadConfiguration } from './configuration/configuration.js';
 import type { WaldoServiceOptions, CapabilitiesWithWaldo } from './types.js';
 
 import logger from '@wdio/logger';
+import {
+    getProcessEnvironmentConfiguration,
+    ProcessEnvironmentConfiguration,
+} from './configuration/processEnvironment.js';
+import { loadWaldoProfile, WaldoProfileYaml } from './configuration/waldoProfile.js';
 
 const log = logger('@waldoapp/wdio-service');
 
 export class WaldoWdioLauncherService implements Services.ServiceInstance {
     private serviceOptions: WaldoServiceOptions;
-
-    private configuration: Configuration | undefined;
+    private processEnvConfig: ProcessEnvironmentConfiguration;
+    private waldoProfile: WaldoProfileYaml | undefined;
 
     constructor(serviceOptions: WaldoServiceOptions) {
         this.serviceOptions = serviceOptions;
+        this.processEnvConfig = getProcessEnvironmentConfiguration();
     }
 
     async onPrepare(
         config: Options.Testrunner,
         capabilities: Capabilities.RemoteCapabilities,
     ): Promise<void> {
-        this.configuration = await loadConfiguration();
-        this.configureRemoteInAllCapabilities(config, capabilities, this.configuration);
+        this.waldoProfile = await loadWaldoProfile();
+        this.configureRemoteInAllCapabilities(config, capabilities);
     }
 
     private configureRemoteInAllCapabilities(
         config: Options.Testrunner,
         capabilities: Capabilities.RemoteCapabilities,
-        configuration: Configuration,
     ) {
         if (Array.isArray(capabilities)) {
             for (const cap of capabilities) {
                 const alwaysMatch = 'alwaysMatch' in cap ? cap.alwaysMatch : cap;
-                this.checkCapabilities(config, alwaysMatch, configuration);
+                this.checkCapabilities(config, alwaysMatch);
                 this.overrideRemoteInCapabilities(alwaysMatch);
             }
         } else if (typeof capabilities === 'object' && capabilities !== null) {
             for (const cap of Object.values(capabilities)) {
-                this.checkCapabilities(config, cap, configuration);
+                this.checkCapabilities(config, cap);
                 this.overrideRemoteInCapabilities(cap);
             }
         }
@@ -49,28 +53,43 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
     private checkCapabilities(
         testRunnerOptions: Options.Testrunner,
         capabilities: CapabilitiesWithWaldo,
-        configuration: Configuration,
     ) {
         capabilities['waldo:options'] = capabilities['waldo:options'] ?? {};
+        const waldoOptions = capabilities['waldo:options'];
+
+        // Priority order:
+        // 1. processEnvConfig: Environment variable
+        // 2. waldoOptions: Waldo specific capabilities
+        // 3. capabilities: Global / appium capabilities
+        // 4. serviceOptions: Service option (Passed to the constructor)
+        // 5. testRunnerOptions: Test runner option (key, port, hostname, ...)
+        // 6. waldoProfile: User-local profile (e.g. ~/.waldo/profile.yml, only for token)
+        // 7. Default value
+
+        const { processEnvConfig, serviceOptions, waldoProfile } = this;
 
         capabilities['appium:app'] =
-            capabilities['appium:app'] ?? this.serviceOptions.versionId ?? configuration.versionId;
+            processEnvConfig?.versionId ??
+            waldoOptions.versionId ??
+            capabilities['appium:app'] ??
+            serviceOptions.versionId;
+        delete waldoOptions.versionId;
 
-        const waldoOptions = capabilities['waldo:options'];
         waldoOptions.token =
+            processEnvConfig.token ??
             waldoOptions.token ??
-            this.serviceOptions.token ??
             capabilities.key ??
+            serviceOptions.token ??
             testRunnerOptions.key ??
-            configuration.token;
+            waldoProfile?.user_token;
+        delete capabilities.key;
+
         waldoOptions.sessionId =
-            waldoOptions.sessionId ?? this.serviceOptions.sessionId ?? configuration.sessionId;
+            processEnvConfig.sessionId ?? waldoOptions.sessionId ?? serviceOptions.sessionId;
         waldoOptions.waitSessionReady =
-            waldoOptions.waitSessionReady ?? this.serviceOptions.waitSessionReady;
+            waldoOptions.waitSessionReady ?? serviceOptions.waitSessionReady;
         waldoOptions.showSession =
-            waldoOptions.showSession ??
-            this.serviceOptions.showSession ??
-            configuration.showSession;
+            processEnvConfig.showSession ?? waldoOptions.showSession ?? serviceOptions.showSession;
 
         const hasVersionInformation =
             typeof capabilities['appium:app'] === 'string' ||
@@ -84,7 +103,7 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
 
     private overrideRemoteInCapabilities(capabilities: Options.Connection): void {
         const environment =
-            this.serviceOptions.environment ?? this.configuration?.environment ?? 'production';
+            this.processEnvConfig?.environment ?? this.serviceOptions.environment ?? 'production';
 
         log.debug(`Connecting to Waldo ${environment} environment`);
 
