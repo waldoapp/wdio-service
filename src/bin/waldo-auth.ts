@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console -- This file is a command line program */
 
 /**
  * This is a very basic utility to capture the token into a local file
