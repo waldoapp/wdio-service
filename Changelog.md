@@ -1,3 +1,7 @@
+## Version 0.2.5
+
+- Fix configuration precedence, ensure that environment variables always take precedence over the configuration file.
+
 ## Version 0.2.4
 
 - Fix horizontal swipe coordinate calculation in `swipeScreen`
