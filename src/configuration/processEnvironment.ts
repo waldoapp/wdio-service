@@ -1,4 +1,4 @@
-import * as process from 'process';
+import * as process from 'node:process';
 
 import type { WaldoEnvironment } from '../types.js';
 import { parseEnvironment } from './waldoEnvironment.js';
@@ -16,7 +16,18 @@ function parseBoolean(value: string | undefined): boolean | undefined {
         return undefined;
     }
 
-    return value === '1' || value.toLowerCase() === 'true';
+    switch (value.toLowerCase()) {
+        case 'true':
+        case '1':
+        case 'yes':
+            return true;
+        case 'false':
+        case '0':
+        case 'no':
+            return false;
+        default:
+            return undefined;
+    }
 }
 
 export function getProcessEnvironmentConfiguration(): ProcessEnvironmentConfiguration {
