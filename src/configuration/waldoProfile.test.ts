@@ -3,7 +3,7 @@ import memfs from 'memfs';
 import { loadWaldoProfile } from './waldoProfile.js';
 import { waldoDir, writeTestProfile } from '../__tests__/waldoProfileUtils.js';
 
-vi.mock('node:fs', async () => {
+vi.mock('node:fs', () => {
     return memfs.fs;
 });
 
@@ -25,7 +25,7 @@ describe('loadWaldoProfile', () => {
 
     it('throw on invalid YAML', async () => {
         await writeTestProfile('x:\n💩');
-        expect(loadWaldoProfile).rejects.toThrow();
+        await expect(loadWaldoProfile).rejects.toThrow();
     });
 
     it('load expected profile key', async () => {

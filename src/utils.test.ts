@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest';
 import { first, last, performSwipe, swipeScreen, waitAsPromise, waitForElement } from './utils.js';
 import { attach } from 'webdriverio';
