@@ -1,7 +1,7 @@
 import { describe, it, vi, expect, afterEach } from 'vitest';
 import memfs from 'memfs';
 import { loadWaldoProfile } from './waldoProfile.js';
-import { waldoDir, writeTestProfile } from '../__test__/waldoProfileUtils.js';
+import { waldoDir, writeTestProfile } from '../__tests__/waldoProfileUtils.js';
 
 vi.mock('node:fs', async () => {
     return memfs.fs;
