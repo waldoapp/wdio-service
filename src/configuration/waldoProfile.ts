@@ -7,17 +7,18 @@ export type WaldoProfileYaml = {
     user_token?: string;
 };
 
+const waldoProfileFile = `${homedir()}/.waldo/profile.yml`;
+
 export async function loadWaldoProfile(): Promise<WaldoProfileYaml> {
-    const waldoProfileFile = `${homedir()}/.waldo/profile.yml`;
     try {
         const ymlContent = await fs.promises.readFile(waldoProfileFile, 'utf-8');
         return parseYaml(ymlContent);
     } catch (error: unknown) {
         // File not existing is expected - any other error is not
-        if (isNodeError(error) && error.code !== 'ENOENT') {
-            throw error;
+        if (isNodeError(error) && error.code === 'ENOENT') {
+            return {};
         }
 
-        return {};
+        throw error;
     }
 }
