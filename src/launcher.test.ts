@@ -20,7 +20,7 @@ describe('onPrepare', () => {
     it('defaults are as expected for array of capabilities', async () => {
         const service = new WaldoWdioLauncherService({});
         const remoteCapabilities: TestrunnerCapabilities = [{ 'appium:app': 'appv-12345' }];
-        const config: TestRunnerOptionsForTests = {};
+        const config: TestRunnerOptionsForTests = { capabilities: {} };
         await service.onPrepare(config, remoteCapabilities);
         expect(remoteCapabilities).toEqual([
             { 'appium:app': 'appv-12345', ...PRODUCTION_CONNECTION, 'waldo:options': {} },
@@ -36,7 +36,7 @@ describe('onPrepare', () => {
                 firstMatch: [{ platformName: 'macos' }, { platformName: 'linux' }],
             },
         ];
-        const config: TestRunnerOptionsForTests = {};
+        const config: TestRunnerOptionsForTests = { capabilities: {} };
         await service.onPrepare(config, remoteCapabilities);
         expect(remoteCapabilities).toEqual([
             {
@@ -55,7 +55,7 @@ describe('onPrepare', () => {
         it('can be specified as an option', async () => {
             const service = new WaldoWdioLauncherService({ environment: 'staging' });
             const remoteCapabilities: TestrunnerCapabilities = [{ 'appium:app': 'appv-12345' }];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 { 'appium:app': 'appv-12345', ...STAGING_CONNECTION, 'waldo:options': {} },
@@ -67,7 +67,7 @@ describe('onPrepare', () => {
             vi.stubEnv('WALDO_ENVIRONMENT', 'staging');
             const service = new WaldoWdioLauncherService({ environment: 'production' });
             const remoteCapabilities: TestrunnerCapabilities = [{ 'appium:app': 'appv-12345' }];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 { 'appium:app': 'appv-12345', ...STAGING_CONNECTION, 'waldo:options': {} },
@@ -81,7 +81,7 @@ describe('onPrepare', () => {
             await writeTestProfile('user_token: profile-token');
             const service = new WaldoWdioLauncherService({});
             const remoteCapabilities: TestrunnerCapabilities = [{ 'appium:app': 'appv-12345' }];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -102,7 +102,7 @@ describe('onPrepare', () => {
 
             const service = new WaldoWdioLauncherService({});
             const remoteCapabilities: TestrunnerCapabilities = [{ 'appium:app': 'appv-12345' }];
-            const config: TestRunnerOptionsForTests = { key: 'runner-token' };
+            const config: TestRunnerOptionsForTests = { capabilities: {}, key: 'runner-token' };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -124,7 +124,7 @@ describe('onPrepare', () => {
 
             const service = new WaldoWdioLauncherService({ token: 'service-token' });
             const remoteCapabilities: TestrunnerCapabilities = [{ 'appium:app': 'appv-12345' }];
-            const config: TestRunnerOptionsForTests = { key: 'runner-token' };
+            const config: TestRunnerOptionsForTests = { capabilities: {}, key: 'runner-token' };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -148,7 +148,7 @@ describe('onPrepare', () => {
             const remoteCapabilities: TestrunnerCapabilities = [
                 { 'appium:app': 'appv-12345', key: 'cap-key-token' },
             ];
-            const config: TestRunnerOptionsForTests = { key: 'runner-token' };
+            const config: TestRunnerOptionsForTests = { capabilities: {}, key: 'runner-token' };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -176,7 +176,7 @@ describe('onPrepare', () => {
                     'waldo:options': { token: 'cap-waldo-token' },
                 },
             ];
-            const config: TestRunnerOptionsForTests = { key: 'runner-token' };
+            const config: TestRunnerOptionsForTests = { capabilities: {}, key: 'runner-token' };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -205,7 +205,7 @@ describe('onPrepare', () => {
                     'waldo:options': { token: 'cap-waldo-token' },
                 },
             ];
-            const config: TestRunnerOptionsForTests = { key: 'runner-token' };
+            const config: TestRunnerOptionsForTests = { capabilities: {}, key: 'runner-token' };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -227,7 +227,7 @@ describe('onPrepare', () => {
         it("can be specified in service options 'versionId'", async () => {
             const service = new WaldoWdioLauncherService({ versionId: 'service-versionId' });
             const remoteCapabilities: TestrunnerCapabilities = [{}];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -243,7 +243,7 @@ describe('onPrepare', () => {
             const remoteCapabilities: TestrunnerCapabilities = [
                 { 'appium:app': 'cap-appium-versionId' },
             ];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -262,7 +262,7 @@ describe('onPrepare', () => {
                     'waldo:options': { versionId: 'cap-waldo-versionId' },
                 },
             ];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -282,7 +282,7 @@ describe('onPrepare', () => {
                     'waldo:options': { versionId: 'cap-waldo-versionId' },
                 },
             ];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
@@ -303,7 +303,7 @@ describe('onPrepare', () => {
                     'waldo:options': { versionId: 'cap-waldo-versionId' },
                 },
             ];
-            const config: TestRunnerOptionsForTests = {};
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
             await service.onPrepare(config, remoteCapabilities);
             expect(remoteCapabilities).toEqual([
                 {
