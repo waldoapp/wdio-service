@@ -370,6 +370,24 @@ If this option is not specified, the default device configured for the app in Wa
 Type: `string` <br/>
 Default: `undefined`
 
+### Language
+
+To set the language for a session you can use the `appium:language` capability.
+This key allows you to specify the language in which the app will run during the session.
+
+```ts
+{
+  "capabilities": {
+    "appium:language": "fr"
+  }
+}
+```
+
+Please not that each device supports a different set of languages. To determine which languages a specific device supports, you can make a call to the following endpoint `GET /devices` on `https://core.waldo.com` and check `supportedLanguages`.
+
+Type: `string` <br/>
+Default: `en`
+
 ## Additional commands
 
 In addition to configuring Waldo as a remote WebDriver endpoint this package also adds the following commands on the
