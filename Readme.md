@@ -377,13 +377,11 @@ This key allows you to specify the language in which the app will run during the
 
 ```ts
 {
-  "capabilities": {
-    "appium:language": "fr"
-  }
+  "capabilities": [{ "appium:language": "fr" }]
 }
 ```
 
-Please not that each device supports a different set of languages. To determine which languages a specific device supports, you can make a call to the following endpoint `GET /devices` on `https://core.waldo.com` and check `supportedLanguages`.
+Please not that each device supports a different set of languages. To determine which languages a specific device supports, you can make a call to the []`GET /devices` endpoint](https://docs.waldo.com/reference/getdevices) on `https://core.waldo.com` and check `supportedLanguages`.
 
 Type: `string` <br/>
 Default: `en`
