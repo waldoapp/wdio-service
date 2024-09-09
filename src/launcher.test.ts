@@ -25,7 +25,7 @@ describe('onPrepare', () => {
         expect(remoteCapabilities).toEqual([
             { 'appium:app': 'appv-12345', ...PRODUCTION_CONNECTION, 'waldo:options': {} },
         ]);
-        expect(config).toEqual({ ...PRODUCTION_CONNECTION });
+        expect(config).toEqual({ capabilities: {}, ...PRODUCTION_CONNECTION });
     });
 
     it('defaults are as expected for alwaysMatch', async () => {
@@ -48,7 +48,7 @@ describe('onPrepare', () => {
                 firstMatch: [{ platformName: 'macos' }, { platformName: 'linux' }],
             },
         ]);
-        expect(config).toEqual({ ...PRODUCTION_CONNECTION });
+        expect(config).toEqual({ capabilities: {}, ...PRODUCTION_CONNECTION });
     });
 
     describe('waldo environment', () => {
@@ -60,7 +60,7 @@ describe('onPrepare', () => {
             expect(remoteCapabilities).toEqual([
                 { 'appium:app': 'appv-12345', ...STAGING_CONNECTION, 'waldo:options': {} },
             ]);
-            expect(config).toEqual({ ...STAGING_CONNECTION });
+            expect(config).toEqual({ capabilities: {}, ...STAGING_CONNECTION });
         });
 
         it('can be specified in env', async () => {
@@ -72,7 +72,7 @@ describe('onPrepare', () => {
             expect(remoteCapabilities).toEqual([
                 { 'appium:app': 'appv-12345', ...STAGING_CONNECTION, 'waldo:options': {} },
             ]);
-            expect(config).toEqual({ ...STAGING_CONNECTION });
+            expect(config).toEqual({ capabilities: {}, ...STAGING_CONNECTION });
         });
     });
 
@@ -92,9 +92,7 @@ describe('onPrepare', () => {
                     },
                 },
             ]);
-            expect(config).toEqual({
-                ...PRODUCTION_CONNECTION,
-            });
+            expect(config).toEqual({ capabilities: {}, ...PRODUCTION_CONNECTION });
         });
 
         it("can be specified in runner options 'key'", async () => {
@@ -114,6 +112,7 @@ describe('onPrepare', () => {
                 },
             ]);
             expect(config).toEqual({
+                capabilities: {},
                 key: 'runner-token',
                 ...PRODUCTION_CONNECTION,
             });
@@ -136,6 +135,7 @@ describe('onPrepare', () => {
                 },
             ]);
             expect(config).toEqual({
+                capabilities: {},
                 key: 'runner-token',
                 ...PRODUCTION_CONNECTION,
             });
@@ -160,6 +160,7 @@ describe('onPrepare', () => {
                 },
             ]);
             expect(config).toEqual({
+                capabilities: {},
                 key: 'runner-token',
                 ...PRODUCTION_CONNECTION,
             });
@@ -188,6 +189,7 @@ describe('onPrepare', () => {
                 },
             ]);
             expect(config).toEqual({
+                capabilities: {},
                 key: 'runner-token',
                 ...PRODUCTION_CONNECTION,
             });
@@ -217,6 +219,7 @@ describe('onPrepare', () => {
                 },
             ]);
             expect(config).toEqual({
+                capabilities: {},
                 key: 'runner-token',
                 ...PRODUCTION_CONNECTION,
             });
