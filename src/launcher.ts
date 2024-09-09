@@ -26,7 +26,10 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
         this.processEnvConfig = getProcessEnvironmentConfiguration();
     }
 
-    async onPrepare(config: Options.Testrunner, capabilities: TestrunnerCapabilities): Promise {
+    async onPrepare(
+        config: Options.Testrunner,
+        capabilities: TestrunnerCapabilities,
+    ): Promise<void> {
         this.waldoProfile = await loadWaldoProfile();
         this.configureRemoteInAllCapabilities(config, capabilities);
     }
