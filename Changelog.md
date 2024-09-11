@@ -1,3 +1,7 @@
+## Version 1.0.0
+
+- Support both WebDriverIO v8 and v9
+
 ## Version 0.2.5
 
 - Fix configuration precedence, ensure that environment variables always take precedence over the configuration file.
