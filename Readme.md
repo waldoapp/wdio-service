@@ -81,15 +81,15 @@ npm install @waldoapp/wdio-service --save-dev
 If you use TypeScript you'll also need to reference package for the types to be available,
 in `tsconfig.json` add `@waldoapp/wdio-service` to the types array:
 
-```js
+```json
 {
-  compilerOptions: {
-    types: [
-      'node',
+  "compilerOptions": {
+    "types": [
+      "node",
       // <snip>
-      '@waldoapp/wdio-service',
-    ],
-  },
+      "@waldoapp/wdio-service"
+    ]
+  }
 }
 ```
 
