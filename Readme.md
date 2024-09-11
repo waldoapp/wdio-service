@@ -57,7 +57,7 @@ Here are the steps to follow for an optimal configuration with Waldo
 - _Which mobile environment you'ld like to automate?_<br />
   **Android** (We won't use the package but it's required)
 - _Do you want to add a service to your test setup?_<br />
-  **Remove appium that was added by default**
+  **Remove appium if that was added by default**
 - _Continue with Appium setup using appium-installer?_<br />
   **No**
 
@@ -86,7 +86,9 @@ in `tsconfig.json` add `@waldoapp/wdio-service` to the types array:
   "compilerOptions": {
     "types": [
       "node",
-      // <snip>
+      "@wdio/globals/types",
+      "expect-webdriverio",
+      "@wdio/mocha-framework",
       "@waldoapp/wdio-service"
     ]
   }
