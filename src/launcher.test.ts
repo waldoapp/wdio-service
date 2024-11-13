@@ -195,6 +195,35 @@ describe('onPrepare', () => {
             });
         });
 
+        it('can be specified in capabilities waldo:token', async () => {
+            await writeTestProfile('user_token: profile-token');
+
+            const service = new WaldoWdioLauncherService({ token: 'service-token' });
+            const remoteCapabilities: TestrunnerCapabilities = [
+                {
+                    'appium:app': 'appv-12345',
+                    key: 'cap-key-token',
+                    'waldo:token': 'cap-waldo-token',
+                },
+            ];
+            const config: TestRunnerOptionsForTests = { capabilities: {}, key: 'runner-token' };
+            await service.onPrepare(config, remoteCapabilities);
+            expect(remoteCapabilities).toEqual([
+                {
+                    'appium:app': 'appv-12345',
+                    ...PRODUCTION_CONNECTION,
+                    'waldo:options': {
+                        token: 'cap-waldo-token',
+                    },
+                },
+            ]);
+            expect(config).toEqual({
+                capabilities: {},
+                key: 'runner-token',
+                ...PRODUCTION_CONNECTION,
+            });
+        });
+
         it('can be specified in env', async () => {
             await writeTestProfile('user_token: profile-token');
 
@@ -263,6 +292,25 @@ describe('onPrepare', () => {
                 {
                     'appium:app': 'cap-appium-versionId',
                     'waldo:options': { versionId: 'cap-waldo-versionId' },
+                },
+            ];
+            const config: TestRunnerOptionsForTests = { capabilities: {} };
+            await service.onPrepare(config, remoteCapabilities);
+            expect(remoteCapabilities).toEqual([
+                {
+                    'appium:app': 'cap-waldo-versionId',
+                    ...PRODUCTION_CONNECTION,
+                    'waldo:options': {},
+                },
+            ]);
+        });
+
+        it('can be specified in capabilities waldoversionId', async () => {
+            const service = new WaldoWdioLauncherService({ versionId: 'service-versionId' });
+            const remoteCapabilities: TestrunnerCapabilities = [
+                {
+                    'appium:app': 'cap-appium-versionId',
+                    'waldo:versionId': 'cap-waldo-versionId',
                 },
             ];
             const config: TestRunnerOptionsForTests = { capabilities: {} };
