@@ -56,11 +56,9 @@ export type WaldoCapabilityOptions = WaldoSharedOptions & {
      * Operating system version to use, like `17.0` or `33.0`
      */
     osVersion?: string;
-};
 
-export type WaldoCapabilities = {
     /** Name of the session that will appear in Waldo session history */
-    'waldo:displayName'?: string;
+    displayName?: string;
 
     /**
      * Type of automation to use
@@ -73,11 +71,17 @@ export type WaldoCapabilities = {
      *
      * Case insensitive
      */
-    'waldo:automationName'?: string;
+    automationName?: string;
+};
 
+type PrefixAllProperties<T, Prefix extends string> = {
+    [K in keyof T as K extends string ? `${Prefix}:${K}` : never]: T[K];
+};
+
+export type WaldoCapabilities = {
     /** Waldo specific options */
     'waldo:options'?: WaldoCapabilityOptions;
-};
+} & PrefixAllProperties<WaldoCapabilityOptions, 'waldo'>;
 
 /**
  * The type for capabilities that the test runner can use.

@@ -63,7 +63,7 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
 
         // Priority order:
         // 1. processEnvConfig: Environment variable
-        // 2. waldoOptions: Waldo specific capabilities
+        // 2. waldoOptions: Waldo specific capabilities (First in waldo:option then prefixed at root)
         // 3. capabilities: Global / appium capabilities
         // 4. serviceOptions: Service option (Passed to the constructor)
         // 5. testRunnerOptions: Test runner option (key, port, hostname, ...)
@@ -75,25 +75,42 @@ export class WaldoWdioLauncherService implements Services.ServiceInstance {
         capabilities['appium:app'] =
             processEnvConfig?.versionId ??
             waldoOptions.versionId ??
+            capabilities['waldo:versionId'] ??
             capabilities['appium:app'] ??
             serviceOptions.versionId;
         delete waldoOptions.versionId;
+        delete capabilities['waldo:versionId'];
 
         waldoOptions.token =
             processEnvConfig.token ??
             waldoOptions.token ??
+            capabilities['waldo:token'] ??
             capabilities.key ??
             serviceOptions.token ??
             testRunnerOptions.key ??
             waldoProfile?.user_token;
         delete capabilities.key;
+        delete capabilities['waldo:token'];
 
         waldoOptions.sessionId =
-            processEnvConfig.sessionId ?? waldoOptions.sessionId ?? serviceOptions.sessionId;
+            processEnvConfig.sessionId ??
+            waldoOptions.sessionId ??
+            capabilities['waldo:sessionId'] ??
+            serviceOptions.sessionId;
+        delete capabilities['waldo:sessionId'];
+
         waldoOptions.waitSessionReady =
-            waldoOptions.waitSessionReady ?? serviceOptions.waitSessionReady;
+            waldoOptions.waitSessionReady ??
+            capabilities['waldo:waitSessionReady'] ??
+            serviceOptions.waitSessionReady;
+        delete capabilities['waldo:waitSessionReady'];
+
         waldoOptions.showSession =
-            processEnvConfig.showSession ?? waldoOptions.showSession ?? serviceOptions.showSession;
+            processEnvConfig.showSession ??
+            waldoOptions.showSession ??
+            capabilities['waldo:showSession'] ??
+            serviceOptions.showSession;
+        delete capabilities['waldo:showSession'];
 
         const hasVersionInformation =
             typeof capabilities['appium:app'] === 'string' ||
