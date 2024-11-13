@@ -249,8 +249,9 @@ failed.
 
 ## Waldo service options
 
-To authorize the Waldo service your configuration _must_ contain a token for example in the
-[`key`](https://webdriver.io/docs/options#key) option.
+> ℹ️ **Note**
+> To authorize the Waldo service your configuration _must_ contain a token for example in the
+> [`key`](https://webdriver.io/docs/options#key) option.
 
 ### token
 
@@ -301,9 +302,36 @@ For Appium compatibility, this option can also be specified in the `appium:app` 
 Type: `string` <br/>
 Default: `undefined`
 
+### coordinateMode
+
+> ⚠️️ **Warning**
+>
+> This is iOS specific, sessions on Android will fail to start if this property is specified.
+
+```ts
+'waldo:options': {
+  automationName: 'Waldo',
+  coordinateMode: 'logical',
+},
+```
+
+All coordinates sent in commands or received via the `/source` endpoint can either be in `'logical'` mode, expressed
+in points or in `'device'` mode, expressed in pixels.
+
+```ts
+const points = pixel / screenScale;
+```
+
+- When emulating Appium, the coordinates are always expressed in points (`'logical'`) and specifying any
+  other value will fail.
+- In waldo mode the default is to use pixel coordinates (`'device'`) but this option/capability allow to change it .
+
+Type: `'logical' | 'device'` <br/>
+Default: `undefined` for Android, `'logical'` for Appium iOS, `'device'` for Waldo iOS
+
 ## Device capabilities
 
-Most of the service options can also be specified in the capabilities object for a specific device inside the
+All the service options can also be specified in the capabilities object for a specific device inside the
 `waldo:options` key:
 
 ```ts
@@ -318,9 +346,29 @@ capabilities: [
 ];
 ```
 
-### waldo:automationName
+And all capabilities can also be specified without nesting them inside `waldo:options` by prefixing them with `waldo:`.
+The previous example is equivalent to:
 
-This option can also be specified as `appium:automationName`.
+```ts
+capabilities: [
+  {
+    platformName: 'Android',
+    'waldo:deviceName': 'Pixel 3a',
+    'waldo:showSession': true,
+  },
+];
+```
+
+### automationName
+
+```ts
+'waldo:options': {
+  automationName: 'Waldo',
+},
+```
+
+This option can also be specified as `appium:automationName` or non-prefixed `automationName` directly in the
+capabilities object.
 
 For compatibility, the default behavior of the Waldo service is to return a tree similar to the one returned by Appium,
 this is the equivalent of providing `UiAutomator2`, `UiAutomator2` or `Appium` as the automation name.
@@ -340,8 +388,6 @@ Default: `Appium`
 
 ### deviceName
 
-Placed inside the `waldo:options` object:
-
 ```ts
 'waldo:options': {
   deviceName: 'Pixel 3a',
@@ -356,8 +402,6 @@ Type: `string` <br/>
 Default: `undefined`
 
 ### osVersion
-
-Placed inside the `waldo:options` object:
 
 ```ts
 'waldo:options': {
@@ -383,7 +427,9 @@ This key allows you to specify the language in which the app will run during the
 }
 ```
 
-Please not that each device supports a different set of languages. To determine which languages a specific device supports, you can make a call to the []`GET /devices` endpoint](https://docs.waldo.com/reference/getdevices) on `https://core.waldo.com` and check `supportedLanguages`.
+Please not that each device supports a different set of languages. To determine which languages a specific device
+supports, you can make a call to the []`GET /devices` endpoint](https://docs.waldo.com/reference/getdevices)
+on `https://core.waldo.com` and check `supportedLanguages`.
 
 Type: `string` <br/>
 Default: `en`
