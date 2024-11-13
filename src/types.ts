@@ -4,6 +4,12 @@ import { WaldoTree, WaldoTreeElement } from './tree-types.js';
 
 export type WaldoEnvironment = 'production' | 'staging' | 'development';
 
+/**
+ * Indicates if positions and size are logical coordinates in points (`points = pixel / scale`) or device coordinates
+ * in pixels.
+ */
+export type CoordinateMode = 'logical' | 'device';
+
 type WaldoSharedOptions = {
     /**
      * Security token
@@ -44,6 +50,12 @@ type WaldoSharedOptions = {
      * ID (`appv-0123456789abcdef`) of the application version to use for the session.
      */
     versionId?: string;
+
+    /**
+     * Indicates if positions and size are logical coordinates in points (`points = pixel / scale`) or device coordinates
+     * in pixels. (iOS only)
+     */
+    coordinateMode?: CoordinateMode;
 };
 
 export type WaldoCapabilityOptions = WaldoSharedOptions & {
