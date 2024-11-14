@@ -1,3 +1,9 @@
+## Version 1.1.0
+
+- Add the `waldo:` prefixed capability variants to the types
+- Add the `coordinateMode` capability
+- Upgrate to `open` version 10 (From 8)
+
 ## Version 1.0.0
 
 - Support both WebDriverIO v8 and v9
