@@ -20,6 +20,55 @@ const noSuchElementErrorObject = Object.freeze({
     stacktrace: '',
 });
 
+class PromiseTracker<T> {
+    #ended: boolean = false;
+    get ended() {
+        return this.#ended;
+    }
+
+    #success: boolean | undefined;
+    get success() {
+        return this.#success;
+    }
+
+    #result: T | undefined;
+    get result(): T {
+        if (!this.#ended) {
+            throw new Error('This promise is still in progress');
+        }
+        if (!this.#success) {
+            throw new Error('This promise has failed');
+        }
+        return this.#result!;
+    }
+
+    #error: unknown;
+    get error() {
+        if (!this.#ended) {
+            throw new Error('This promise is still in progress');
+        }
+        if (this.#success) {
+            throw new Error("This promise hasn't failed");
+        }
+        return this.#error;
+    }
+
+    constructor(promise: Promise<T>) {
+        promise.then(
+            (result) => {
+                this.#ended = true;
+                this.#success = true;
+                this.#result = result;
+            },
+            (error) => {
+                this.#ended = true;
+                this.#success = false;
+                this.#error = error;
+            },
+        );
+    }
+}
+
 /**
  * Return a browser instance.
  * This is useful to take methods from it and use them as-is or modified on mocks.
@@ -81,52 +130,103 @@ describe('waitForElement', () => {
         const noSuchElementError = new Error('Not found');
         noSuchElementError.name = 'no such element';
         browser.findElement = vi.fn(() => Promise.reject(noSuchElementError));
-        let resolved = false;
-        const foundPromise = waitForElement(browser, 'selector', 'value')
-            .catch((e) => e)
-            .finally(() => {
-                resolved = true;
-            });
+        const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
         await vi.advanceTimersByTimeAsync(4999);
-        expect(resolved).toEqual(false);
+        expect(promise.ended).toEqual(false);
         await vi.advanceTimersByTimeAsync(1);
-        expect(resolved).toEqual(true);
-        const found = await foundPromise;
-        expect(found).toBeInstanceOf(Error);
-        expect(found.message).toMatch(/Could not find element with "selector"='value'/);
+        expect(promise.ended).toEqual(true);
+        expect(promise.error).toBeInstanceOf(Error);
+        expect((promise.error as Error).message).toMatch(
+            /Could not find element with "selector"='value'/,
+        );
     });
 
     it("fails when the element is not present (And the 'no such element' error is handled)", async () => {
         const browser = await getFakeBrowser();
         browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
-        let resolved = false;
-        const foundPromise = waitForElement(browser, 'selector', 'value')
-            .catch((e) => e)
-            .finally(() => {
-                resolved = true;
-            });
+        const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
         await vi.advanceTimersByTimeAsync(4999);
-        expect(resolved).toEqual(false);
+        expect(promise.ended).toEqual(false);
         await vi.advanceTimersByTimeAsync(1);
-        expect(resolved).toEqual(true);
-        const found = await foundPromise;
-        expect(found).toBeInstanceOf(Error);
-        expect(found.message).toMatch(/Could not find element with "selector"='value'/);
+        expect(promise.ended).toEqual(true);
+        expect(promise.error).toBeInstanceOf(Error);
+        expect((promise.error as Error).message).toMatch(
+            /Could not find element with "selector"='value'/,
+        );
     });
 
     it('works when the element is present after a delay', async () => {
         const browser = await getFakeBrowser();
         browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
+        const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
+        await vi.advanceTimersByTimeAsync(1000);
+        expect(promise.ended).toEqual(false);
+        browser.findElement = vi.fn(() => Promise.resolve({ [ELEMENT_KEY]: 'fake.element.id' }));
+        await vi.advanceTimersByTimeAsync(500);
+        expect(promise.ended).toEqual(true);
+        expect(promise.result['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
+    });
+
+    it('respect passed in timeout (not hit)', async () => {
+        const browser = await getFakeBrowser();
+        browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
+        const promise = new PromiseTracker(
+            waitForElement(browser, 'selector', 'value', 42000, 100),
+        );
+        await vi.advanceTimersByTimeAsync(42000 - 2 * 100);
+        expect(promise.ended).toEqual(false);
+        browser.findElement = vi.fn(() => Promise.resolve({ [ELEMENT_KEY]: 'fake.element.id' }));
+        await vi.advanceTimersByTimeAsync(100);
+        expect(promise.ended).toEqual(true);
+        expect(promise.result['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
+    });
+
+    it('respect passed in timeout (hit)', async () => {
+        const browser = await getFakeBrowser();
+        browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
+        const promise = new PromiseTracker(
+            waitForElement(browser, 'selector', 'value', 42000, 100),
+        );
+        await vi.advanceTimersByTimeAsync(42000 - 100);
+        expect(promise.ended).toEqual(false);
+        await vi.advanceTimersByTimeAsync(100);
+        expect(promise.ended).toEqual(true);
+
+        expect(promise.error).instanceOf(Error);
+    });
+
+    it('respect browser configured timeout (not hit)', async () => {
+        const browser = await getFakeBrowser();
+        browser.options.waitforTimeout = 42000;
+        browser.options.waitforInterval = 100;
+
+        browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
         let resolved = false;
         const foundPromise = waitForElement(browser, 'selector', 'value').finally(() => {
             resolved = true;
         });
-        await vi.advanceTimersByTimeAsync(1000);
+        await vi.advanceTimersByTimeAsync(42000 - 2 * 100);
+        expect(resolved).toEqual(false);
         browser.findElement = vi.fn(() => Promise.resolve({ [ELEMENT_KEY]: 'fake.element.id' }));
-        await vi.advanceTimersByTimeAsync(500);
+        await vi.advanceTimersByTimeAsync(100);
         expect(resolved).toEqual(true);
         const found = await foundPromise;
         expect(found['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
+    });
+
+    it('respect browser configured timeout (hit)', async () => {
+        const browser = await getFakeBrowser();
+        browser.options.waitforTimeout = 42000;
+        browser.options.waitforInterval = 100;
+
+        browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
+        const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
+        await vi.advanceTimersByTimeAsync(42000 - 100);
+        expect(promise.ended).toEqual(false);
+        await vi.advanceTimersByTimeAsync(100);
+        expect(promise.ended).toEqual(true);
+
+        expect(promise.error).instanceOf(Error);
     });
 });
 
