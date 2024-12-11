@@ -436,8 +436,9 @@ Default: `en`
 
 ### Intercept Network
 
-The `interceptNetwork` field determines whether Waldo intercepts and displays the content of HTTP calls made by the application during a session. 
+The `interceptNetwork` field determines whether Waldo intercepts and displays the content of HTTP calls made by the application during a session.
 To enable or disable `interceptNetwork` for a specific session, include it in the `waldo:options` object during session creation:
+
 ```ts
 {
   "capabilities": [{
@@ -448,9 +449,11 @@ To enable or disable `interceptNetwork` for a specific session, include it in th
 }
 ```
 
-If you don't specify the `interceptNetwork` field, the default value is the one set on the application level in the WebApp under the Network Application Configuration section. 
+If you don't specify the `interceptNetwork` field, the default value is the one set on the application level ([check here](https://app.waldo.com/applications/0/configurations/network)) under the Network Application Configuration section.
 This setting applies globally to all sessions for the application.
 
+Type: `boolean` <br/>
+Default: The value configured for [the application](https://app.waldo.com/applications/0/configurations/network).
 
 ## Additional commands
 
