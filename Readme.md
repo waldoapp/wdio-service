@@ -427,12 +427,33 @@ This key allows you to specify the language in which the app will run during the
 }
 ```
 
-Please not that each device supports a different set of languages. To determine which languages a specific device
+Please note that each device supports a different set of languages. To determine which languages a specific device
 supports, you can make a call to the []`GET /devices` endpoint](https://docs.waldo.com/reference/getdevices)
 on `https://core.waldo.com` and check `supportedLanguages`.
 
 Type: `string` <br/>
 Default: `en`
+
+### Intercept Network
+
+The `interceptNetwork` field determines whether Waldo intercepts and displays the content of HTTP calls made by the application during a session.
+To enable or disable `interceptNetwork` for a specific session, include it in the `waldo:options` object during session creation:
+
+```ts
+{
+  "capabilities": [{
+    "waldo:options": {
+      "interceptNetwork": true
+    }
+  }]
+}
+```
+
+If you don't specify the `interceptNetwork` field, the default value is the one set on the application level ([check here](https://app.waldo.com/applications/0/configurations/network)) under the Network Application Configuration section.
+This setting applies globally to all sessions for the application.
+
+Type: `boolean` <br/>
+Default: The value configured for [the application](https://app.waldo.com/applications/0/configurations/network).
 
 ## Additional commands
 

@@ -72,6 +72,9 @@ export type WaldoCapabilityOptions = WaldoSharedOptions & {
     /** Name of the session that will appear in Waldo session history */
     displayName?: string;
 
+    /** Whether to intercept the network for this specific Waldo session */
+    interceptNetwork?: boolean;
+
     /**
      * Type of automation to use
      *
