@@ -87,6 +87,8 @@ export type WaldoCapabilityOptions = WaldoSharedOptions & {
      * Case insensitive
      */
     automationName?: string;
+
+    internalFlags?: Record<string, boolean>;
 };
 
 type PrefixAllProperties<T, Prefix extends string> = {
