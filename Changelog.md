@@ -1,3 +1,7 @@
+## Version 1.1.1
+
+- Add the `interceptNetwork` capability
+
 ## Version 1.1.0
 
 - Add the `waldo:` prefixed capability variants to the types
