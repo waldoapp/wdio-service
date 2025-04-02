@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, it, vi, expect } from 'vitest';
 import { first, last, performSwipe, swipeScreen, waitAsPromise, waitForElement } from './utils.js';
 import { attach } from 'webdriverio';
 import { ELEMENT_KEY } from 'webdriver';
+import { PromiseTracker } from './__tests__/promiseTracker.js';
 
 vi.mock('axios');
 
@@ -19,55 +20,6 @@ const noSuchElementErrorObject = Object.freeze({
     message: 'An element could not be located on the page using the given search parameters.',
     stacktrace: '',
 });
-
-class PromiseTracker<T> {
-    #ended: boolean = false;
-    get ended() {
-        return this.#ended;
-    }
-
-    #success: boolean | undefined;
-    get success() {
-        return this.#success;
-    }
-
-    #result: T | undefined;
-    get result(): T {
-        if (!this.#ended) {
-            throw new Error('This promise is still in progress');
-        }
-        if (!this.#success) {
-            throw new Error('This promise has failed');
-        }
-        return this.#result!;
-    }
-
-    #error: unknown;
-    get error() {
-        if (!this.#ended) {
-            throw new Error('This promise is still in progress');
-        }
-        if (this.#success) {
-            throw new Error("This promise hasn't failed");
-        }
-        return this.#error;
-    }
-
-    constructor(promise: Promise<T>) {
-        promise.then(
-            (result) => {
-                this.#ended = true;
-                this.#success = true;
-                this.#result = result;
-            },
-            (error) => {
-                this.#ended = true;
-                this.#success = false;
-                this.#error = error;
-            },
-        );
-    }
-}
 
 /**
  * Return a browser instance.
@@ -114,6 +66,8 @@ async function getFakeBrowser(): Promise<WebdriverIO.Browser> {
             waitforInterval: 500,
         },
         waitUntil: someBrowser.waitUntil,
+        on: someBrowser.on,
+        off: someBrowser.off,
     } satisfies Partial<WebdriverIO.Browser> as WebdriverIO.Browser;
 }
 
@@ -132,9 +86,9 @@ describe('waitForElement', () => {
         browser.findElement = vi.fn(() => Promise.reject(noSuchElementError));
         const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
         await vi.advanceTimersByTimeAsync(4999);
-        expect(promise.ended).toEqual(false);
+        promise.expectPending();
         await vi.advanceTimersByTimeAsync(1);
-        expect(promise.ended).toEqual(true);
+        promise.expectEnded();
         expect(promise.error).toBeInstanceOf(Error);
         expect((promise.error as Error).message).toMatch(
             /Could not find element with "selector"='value'/,
@@ -146,9 +100,9 @@ describe('waitForElement', () => {
         browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
         const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
         await vi.advanceTimersByTimeAsync(4999);
-        expect(promise.ended).toEqual(false);
+        promise.expectPending();
         await vi.advanceTimersByTimeAsync(1);
-        expect(promise.ended).toEqual(true);
+        promise.expectEnded();
         expect(promise.error).toBeInstanceOf(Error);
         expect((promise.error as Error).message).toMatch(
             /Could not find element with "selector"='value'/,
@@ -160,10 +114,10 @@ describe('waitForElement', () => {
         browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
         const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
         await vi.advanceTimersByTimeAsync(1000);
-        expect(promise.ended).toEqual(false);
+        promise.expectPending();
         browser.findElement = vi.fn(() => Promise.resolve({ [ELEMENT_KEY]: 'fake.element.id' }));
         await vi.advanceTimersByTimeAsync(500);
-        expect(promise.ended).toEqual(true);
+        promise.expectEnded();
         expect(promise.result['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
     });
 
@@ -174,10 +128,10 @@ describe('waitForElement', () => {
             waitForElement(browser, 'selector', 'value', 42000, 100),
         );
         await vi.advanceTimersByTimeAsync(42000 - 2 * 100);
-        expect(promise.ended).toEqual(false);
+        promise.expectPending();
         browser.findElement = vi.fn(() => Promise.resolve({ [ELEMENT_KEY]: 'fake.element.id' }));
         await vi.advanceTimersByTimeAsync(100);
-        expect(promise.ended).toEqual(true);
+        promise.expectEnded();
         expect(promise.result['element-6066-11e4-a52e-4f735466cecf']).toEqual('fake.element.id');
     });
 
@@ -188,9 +142,9 @@ describe('waitForElement', () => {
             waitForElement(browser, 'selector', 'value', 42000, 100),
         );
         await vi.advanceTimersByTimeAsync(42000 - 100);
-        expect(promise.ended).toEqual(false);
+        promise.expectPending();
         await vi.advanceTimersByTimeAsync(100);
-        expect(promise.ended).toEqual(true);
+        promise.expectEnded();
 
         expect(promise.error).instanceOf(Error);
     });
@@ -222,9 +176,9 @@ describe('waitForElement', () => {
         browser.findElement = vi.fn(() => Promise.resolve(noSuchElementErrorObject as any));
         const promise = new PromiseTracker(waitForElement(browser, 'selector', 'value'));
         await vi.advanceTimersByTimeAsync(42000 - 100);
-        expect(promise.ended).toEqual(false);
+        promise.expectPending();
         await vi.advanceTimersByTimeAsync(100);
-        expect(promise.ended).toEqual(true);
+        promise.expectEnded();
 
         expect(promise.error).instanceOf(Error);
     });
