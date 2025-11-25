@@ -18,22 +18,22 @@ jobs:
         with:
           node-version: 22.x
       - name: Install packages
-        run: npm ci
+        run: corepack enable && pnpm install
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Test
-        run: npm test
+        run: pnpm test
       - name: Generate package
-        run: npm pack
+        run: pnpm pack
       - name: Upload artifact (Package)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: package
           path: '*.tgz'
       - name: prettier
-        run: npm run prettier:check
+        run: pnpm run prettier:check
       - name: eslint
-        run: npm run eslint:check
+        run: pnpm run eslint:check
 
   build:
     name: Build
@@ -53,9 +53,9 @@ jobs:
       - name: Force wdio version ${{ matrix.wdio-version }}
         run: |
           sed -i -e 's/"^8.0.0 || ^9.0.0"/"${{ matrix.wdio-version }}"/g' package.json
-      - name: Install packages
-        run: npm install
+      - name: Install packages, update the lockfile
+        run: corepack enable && pnpm install --no-frozen-lockfile
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Test
-        run: npm test
+        run: pnpm test

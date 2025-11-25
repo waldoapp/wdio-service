@@ -25,9 +25,10 @@
         "build": "rm -rf dist && tsc",
         "build:pack": "rm -rf dist && tsc -p tsconfig.pack.json",
         "test": "vitest",
-        "prepack": " yarn build:pack",
-        "eslint:fix": "yarn eslint --cache --cache-location=node_modules/.cache/eslint/ --fix .",
-        "eslint:check": "yarn eslint --cache --cache-location=node_modules/.cache/eslint/ .",
+        "ci": "pnpm build && pnpm test --run && pnpm prettier:check && pnpm eslint:check",
+        "prepack": "pnpm build:pack",
+        "eslint:fix": "eslint --cache --cache-location=node_modules/.cache/eslint/ --fix .",
+        "eslint:check": "eslint --cache --cache-location=node_modules/.cache/eslint/ .",
         "prettier:fix": "prettier --cache --write .",
         "prettier:check": "prettier --cache --check ."
     },
@@ -64,5 +65,6 @@
     },
     "files": [
         "dist"
-    ]
+    ],
+    "packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b"
 }
